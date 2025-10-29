@@ -1,6 +1,6 @@
 import os
 from typing import Dict, List, Any, Optional
-from flask import Flask, jsonify, Response
+from flask import Flask, jsonify, Response, request
 from models import init_db, db, Dog, Breed
 
 # Get the server directory path
@@ -20,6 +20,15 @@ def get_dogs() -> Response:
         Dog.name, 
         Breed.name.label('breed')
     ).join(Breed, Dog.breed_id == Breed.id)
+    
+    # Get breed filter from query parameters
+    breeds_param = request.args.get('breeds')
+    if breeds_param:
+        # Parse comma-separated breed names
+        breed_names = [b.strip() for b in breeds_param.split(',') if b.strip()]
+        if breed_names:
+            # Filter by breed names (OR logic - any of the selected breeds)
+            query = query.filter(Breed.name.in_(breed_names))
     
     dogs_query = query.all()
     
@@ -64,6 +73,16 @@ def get_dog(id: int) -> tuple[Response, int] | Response:
     }
     
     return jsonify(dog)
+
+@app.route('/api/breeds', methods=['GET'])
+def get_breeds() -> Response:
+    """Get all available breeds"""
+    breeds_query = db.session.query(Breed.name).order_by(Breed.name).all()
+    
+    # Convert to list of breed names
+    breeds_list: List[str] = [breed.name for breed in breeds_query]
+    
+    return jsonify(breeds_list)
 
 ## HERE
 
