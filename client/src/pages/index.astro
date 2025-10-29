@@ -1,6 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import DogList from '../components/DogList.svelte';
+import DogBrowser from '../components/DogBrowser.svelte';
 import "../styles/global.css";
 ---
 
@@ -11,6 +11,6 @@ import "../styles/global.css";
       <p class="text-xl text-slate-300">Find your perfect companion from our wonderful selection of dogs looking for their forever homes.</p>
     </div>
     
-    <DogList client:only="svelte" />
+    <DogBrowser client:only="svelte" />
   </div>
 </Layout>

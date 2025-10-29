@@ -8,13 +8,21 @@
     }
 
     export let dogs: Dog[] = [];
+    export let selectedBreeds: string[] = [];
     let loading = true;
     let error: string | null = null;
+    let debounceTimer: ReturnType<typeof setTimeout> | null = null;
 
-    const fetchDogs = async () => {
+    const fetchDogs = async (breeds: string[] = []) => {
         loading = true;
+        error = null;
         try {
-            const response = await fetch('/api/dogs');
+            let url = '/api/dogs';
+            if (breeds.length > 0) {
+                url += `?breeds=${encodeURIComponent(breeds.join(','))}`;
+            }
+            
+            const response = await fetch(url);
             if(response.ok) {
                 dogs = await response.json();
             } else {
@@ -25,6 +33,20 @@
         } finally {
             loading = false;
         }
+    };
+
+    const debouncedFetchDogs = (breeds: string[]) => {
+        if (debounceTimer) {
+            clearTimeout(debounceTimer);
+        }
+        debounceTimer = setTimeout(() => {
+            fetchDogs(breeds);
+        }, 300); // 300ms debounce
+    };
+
+    export const handleBreedFilterChange = (breeds: string[]) => {
+        selectedBreeds = breeds;
+        debouncedFetchDogs(breeds);
     };
 
     onMount(() => {
@@ -58,7 +80,12 @@
     {:else if dogs.length === 0}
         <!-- no dogs found -->
         <div class="text-center py-12 bg-slate-800/50 backdrop-blur-sm rounded-xl border border-slate-700">
-            <p class="text-slate-300">No dogs available at the moment.</p>
+            {#if selectedBreeds.length > 0}
+                <p class="text-slate-300 mb-4">No dogs found matching the selected breeds.</p>
+                <p class="text-slate-400 text-sm">Try selecting different breeds or clearing the filters.</p>
+            {:else}
+                <p class="text-slate-300">No dogs available at the moment.</p>
+            {/if}
         </div>
     {:else}
         <!-- dog list -->
