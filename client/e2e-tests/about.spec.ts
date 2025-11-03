@@ -13,7 +13,7 @@ test.describe('About Page', () => {
     // Check that content is visible including Zava references
     await expect(page.getByText('Nestled in the heart of Seattle')).toBeVisible();
     await expect(page.getByText('Founded in 2015 by Kayo Miwa')).toBeVisible();
-    await expect(page.getByText('Zava\'s Chief Executive Officer')).toBeVisible();
+    await expect(page.getByText("Zava's Chief Executive Officer")).toBeVisible();
     await expect(page.getByText('The name "Tailspin" reflects')).toBeVisible();
     
     // Check the fictional organization note
