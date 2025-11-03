@@ -10,6 +10,9 @@ test.describe('Tailspin Shelter Homepage', () => {
     // Check that the main heading is visible
     await expect(page.getByRole('heading', { name: 'Welcome to Tailspin Shelter' })).toBeVisible();
     
+    // Check that the Zava subtitle is visible
+    await expect(page.getByText('A Zava supported non-profit organization')).toBeVisible();
+    
     // Check that the description is visible
     await expect(page.getByText('Find your perfect companion from our wonderful selection')).toBeVisible();
   });
