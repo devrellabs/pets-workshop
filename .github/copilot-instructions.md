@@ -10,7 +10,7 @@ When getting work items using MCP Server for Azure DevOps, always try to use bat
 
 1. Get my assigned work items for `PetsWorkshop` project.
 
-2. Take Id's from that result and fetch work items in batch. Get fields Id, Type, Title, State, and Priority fields. Ignore any Test Case or Test Plan work item types.
+2. Take Id's from that result and fetch work items in batch. Get fields Id, Type, Title, State, and Microsoft.VSTS.Common.Priority fields. Ignore any Test Case or Test Plan work item types.
 
 3. Show the results to me in a table with headers.
 
