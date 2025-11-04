@@ -2,7 +2,7 @@
 
 ![The Pets Workshop Mascot](/images/The%20Pets%20Workshop%20Mascot.png)
 
-This repository is used to demonstrate the full capabilities of the **GitHub platform**, including integrations with **Azure Boards** and **Azure Pipelines**. 
+This repository is used to demonstrate the full capabilitiess of the **GitHub platform**, including integrations with **Azure Boards** and **Azure Pipelines**. 
 
 The code is for a website for a fictional dog shelte, with a [Flask](https://flask.palletsprojects.com/en/stable/) backend using [SQLAlchemy](https://www.sqlalchemy.org/) and [Astro](https://astro.build/) frontend using [Svelte](https://svelte.dev/) for dynami pages.
 
@@ -24,7 +24,7 @@ You can find the list of maintainers in [CODEOWNERS](./.github/CODEOWNERS).
 
 This project is provided as-is, and may be updated over time. If you have questions, please create a work item in the [PetsWorkshop](https://dev.azure.com/PUnlimited/PetsWorkshop/_dashboards/dashboard/346a7268-ee7c-42e0-9beb-8000c9259df4) team project in **Azure DevOps**. (**NOTE**: Access to the Azure DevOps team project is limited. If you do not have access, please [open an issue in this repo](https://github.com/devrellabs/pets-workshop/issues).)
 
-# Azure Boards Status 
+# Azure Boards Statuz
 
 [![Board Status](https://dev.azure.com/PUnlimited/915ef36c-5c6d-47d3-a3af-c7570cefb4b9/f71d58d2-562e-4943-ac2f-10cf5c90caf7/_apis/work/boardbadge/d55d864f-57ca-474c-88a0-bc9eacf0cccb)](https://dev.azure.com/PUnlimited/915ef36c-5c6d-47d3-a3af-c7570cefb4b9/_boards/board/t/f71d58d2-562e-4943-ac2f-10cf5c90caf7/Stories/)
 
