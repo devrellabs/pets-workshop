@@ -22,7 +22,7 @@ When the user wants to "clean up my epics", do the following:
 
 2. Fetch wiki page content from `https://dev.azure.com/PUnlimited/PetsWorkshop/_wiki/wikis/PetsWorkshop.wiki/5/Defining-Good-Epics`
 
-3. Go through the description and title of each Epic where the state equals "New". If they do not align with the wiki page, update the title and description to match wiki page guidelines. I like using an emoji as a prefix before the title text. The description should be in markdown format. Make sure you set the format to 'Markdown'. Only update the Epics where State equals "New".
+3. Go through the description and title of each Epic where the state equals "New". If they do not align with the wiki page, update the title and description to match wiki page guidelines. I like using an emoji as a prefix before the title text. The description should be in markdown format. Make sure you set the `format` to 'Markdown'. Only update the Epics where State equals "New".
 
 4. If the Epic does not have any tags, add appropriate tags based on the title and description. Only use these tags of "Security", "Performance", "Reliability", "Usability", "Maintainability", and "Scalability", "High Priority" as appropriate.
 
@@ -40,5 +40,5 @@ When the user wants to "create child stories for feature" and passes the work it
 
 2. Fetch wiki page content from `https://dev.azure.com/PUnlimited/PetsWorkshop/_wiki/wikis/PetsWorkshop.wiki/6/Defining-Good-Features`
 
-3. Go through the description, title and comments of the feature. Create child user stories based on the description and comments of the feature. Each user story should follow the guidelines in the wiki page `https://dev.azure.com/PUnlimited/PetsWorkshop/_wiki/wikis/PetsWorkshop.wiki/11/Defining-Good-User-Stories`. Use `wit_add_child_work_items` tool to create child work items. Create only necessary user stories. They need to have enough detail for coding agent to get work done. But not too much so that only one small change will be made per story. Use the area path and iteration path of the feature. Format of the description should be 'Markdown'.
+3. Go through the description, title and comments of the feature. Create child user stories based on the description and comments of the feature. Each user story should follow the guidelines in the wiki page `https://dev.azure.com/PUnlimited/PetsWorkshop/_wiki/wikis/PetsWorkshop.wiki/11/Defining-Good-User-Stories`. Use `wit_add_child_work_items` tool to create child work items. Create only necessary user stories. They need to have enough detail for coding agent to get work done. But not too much so that only one small change will be made per story. Use the area path and iteration path of the feature. Format of the description should be 'Markdown'. Set `format` to 'Markdown' when creating the user stories.
 
