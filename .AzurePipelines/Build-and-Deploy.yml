@@ -95,9 +95,12 @@ stages:
       runOnce:
         deploy:
           steps:
-          
-          - download: current
-            artifact: $(ArtifactName)
+
+          - script: echo "Task Succeeded"
+            condition: and(succeeded(), eq(variables['mode'], 'emulate'))
+            displayName: 'Download Artifact emulation'          
+#          - download: current
+#            artifact: $(ArtifactName)
 
           - script: echo "Task Succeeded"
             condition: and(succeeded(), eq(variables['mode'], 'emulate'))
@@ -130,8 +133,11 @@ stages:
         deploy:
           steps:
           
-          - download: current
-            artifact: $(ArtifactName)
+          - script: echo "Task Succeeded"
+            condition: and(succeeded(), eq(variables['mode'], 'emulate'))
+            displayName: 'Download Artifact emulation'          
+#          - download: current
+#            artifact: $(ArtifactName)
 
           - script: echo "Task Succeeded"
             condition: and(succeeded(), eq(variables['mode'], 'emulate'))
@@ -164,8 +170,11 @@ stages:
         deploy:
           steps:
           
-          - download: current
-            artifact: $(ArtifactName)
+          - script: echo "Task Succeeded"
+            condition: and(succeeded(), eq(variables['mode'], 'emulate'))
+            displayName: 'Download Artifact emulation'          
+#          - download: current
+#            artifact: $(ArtifactName)
 
           - script: echo "Task Succeeded"
             condition: and(succeeded(), eq(variables['mode'], 'emulate'))
