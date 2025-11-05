@@ -1,3 +1,11 @@
+##################################################################################################################
+# Build and deploy via Azure Pipelines
+# Refer to https://dev.azure.com/PUnlimited/PetsWorkshop/_boards/board/t/PetsWorkshop%20Team/Stories?workitem=642
+# NOTE: In the interest of time, we will emulate a multi-stage deployment for now. 
+# In the fullness of time we will complete the steps noted in the User Story.
+# Dave Burnison 2025-11-05
+##################################################################################################################
+
 trigger:
   branches:
     include:
