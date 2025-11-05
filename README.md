@@ -51,7 +51,7 @@ This project is provided as-is, and may be updated over time. If you have questi
 
 - [![Azure DevOps Dashboard](/images/azure_devops_dashboard_icon.png)<br/>Azure DevOps Dashboard](https://dev.azure.com/PUnlimited/PetsWorkshop/_dashboards/dashboard/346a7268-ee7c-42e0-9beb-8000c9259df4)
 
-# Checkout the GitHub Monthly Enterprise Roundup (MER)
+# Check out the GitHub Monthly Enterprise Roundup (MER)
 GitHub is shipping new features, product updates, and best practices faster than ever. To help you stay ahead, the GitHub Enterprise Advocacy team curates a monthly roundup — bringing you a concise, enterprise-focused summary of the most important updates you might have missed.
 
 In these posts, you’ll find a carefully selected list of key innovations, expert insights, and must-know resources—guided by feedback from GitHub’s largest customers—to help your team innovate faster, boost productivity and enhance security.
