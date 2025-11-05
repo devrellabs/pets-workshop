@@ -54,7 +54,7 @@ This project is provided as-is, and may be updated over time. If you have questi
 # Checkout the GitHub Monthly Enterprise Roundup (MER)
 GitHub is shipping new features, product updates, and best practices faster than ever. To help you stay ahead, the GitHub Enterprise Advocacy team curates a monthly roundup — bringing you a concise, enterprise-focused summary of the most important updates you might have missed.
 
-In these posts, you’ll find a carefully selected list of key innovations, expert insights, and must-know resources—guided by feedback from GitHub’s largest customers—to help your team innovate faster, boost productivity and enhance security.
+In these posts, you’ll find a carefully selected list of key innovations, expert insights, and must-know resources—guided by feedback from GitHub’s largest customers—to help your team innovate faster, boost productivity and enhance security.
 
 Share with your teams and stakeholders so they can also get the most out of their GitHub experience. 
 
