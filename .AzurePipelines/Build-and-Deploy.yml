@@ -1,5 +1,9 @@
 trigger:
-- main
+  branches:
+    include:
+      - main
+
+pr: none
 
 pool:
   vmImage: 'ubuntu-latest'
@@ -98,12 +102,6 @@ stages:
 
           - script: echo "Task Succeeded"
             condition: and(succeeded(), eq(variables['mode'], 'emulate'))
-            displayName: 'Download Artifact emulation'          
-#          - download: current
-#            artifact: $(ArtifactName)
-
-          - script: echo "Task Succeeded"
-            condition: and(succeeded(), eq(variables['mode'], 'emulate'))
             displayName: 'Becep Template Execution emulation'
 
           - script: echo "Task Succeeded"
@@ -135,12 +133,6 @@ stages:
           
           - script: echo "Task Succeeded"
             condition: and(succeeded(), eq(variables['mode'], 'emulate'))
-            displayName: 'Download Artifact emulation'          
-#          - download: current
-#            artifact: $(ArtifactName)
-
-          - script: echo "Task Succeeded"
-            condition: and(succeeded(), eq(variables['mode'], 'emulate'))
             displayName: 'Becep Template Execution emulation'
 
           - script: echo "Task Succeeded"
@@ -170,12 +162,6 @@ stages:
         deploy:
           steps:
           
-          - script: echo "Task Succeeded"
-            condition: and(succeeded(), eq(variables['mode'], 'emulate'))
-            displayName: 'Download Artifact emulation'          
-#          - download: current
-#            artifact: $(ArtifactName)
-
           - script: echo "Task Succeeded"
             condition: and(succeeded(), eq(variables['mode'], 'emulate'))
             displayName: 'Becep Template Execution emulation'
