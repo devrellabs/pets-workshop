@@ -1,4 +1,6 @@
 # Run when commits are pushed to Features/DeployToAzure
+name: Build-and-Deploy
+
 on:
   workflow_dispatch:
   push:
