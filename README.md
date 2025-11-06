@@ -1,6 +1,10 @@
-# Pets workshop
+# Tailspin Shelter
 
 ![The Pets Workshop Mascot](/images/The%20Pets%20Workshop%20Mascot.png)
+
+### A Zava supported non-profit organization
+
+![Zava Logo](/images/zava-logo.svg)
 
 This repository is used to demonstrate the full capabilitiess of the **GitHub platform**, including integrations with **Azure Boards** and **Azure Pipelines**. 
 
