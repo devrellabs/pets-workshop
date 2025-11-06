@@ -1,4 +1,6 @@
-# Pets workshop
+# Tailspin Shelter - A Zava supported non-profit organization
+
+![Zava Logo](/images/zava-logo.svg)
 
 ![The Pets Workshop Mascot](/images/The%20Pets%20Workshop%20Mascot.png)
 
