@@ -1,4 +1,4 @@
-# Azure Pipelines YAML for Server Tests
+# Azure Pipelines YAML for Pull Request Checks
 
 # Disable CI trigger - only run on pull requests
 trigger: none

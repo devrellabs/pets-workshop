@@ -1,8 +1,12 @@
-# Pets workshop
+# Tailspin Shelter
 
 ![The Pets Workshop Mascot](/images/The%20Pets%20Workshop%20Mascot.png)
 
-This repository is used to demonstrate the full capabilities of the **GitHub platform**, including integrations with **Azure Boards** and **Azure Pipelines**. 
+### A Zava supported non-profit organization
+
+![Zava Logo](/images/zava-logo.svg)
+
+This repository is used to demonstrate the full capabilitiess of the **GitHub platform**, including integrations with **Azure Boards** and **Azure Pipelines**. 
 
 The code is for a website for a fictional dog shelte, with a [Flask](https://flask.palletsprojects.com/en/stable/) backend using [SQLAlchemy](https://www.sqlalchemy.org/) and [Astro](https://astro.build/) frontend using [Svelte](https://svelte.dev/) for dynami pages.
 
@@ -24,7 +28,7 @@ You can find the list of maintainers in [CODEOWNERS](./.github/CODEOWNERS).
 
 This project is provided as-is, and may be updated over time. If you have questions, please create a work item in the [PetsWorkshop](https://dev.azure.com/PUnlimited/PetsWorkshop/_dashboards/dashboard/346a7268-ee7c-42e0-9beb-8000c9259df4) team project in **Azure DevOps**. (**NOTE**: Access to the Azure DevOps team project is limited. If you do not have access, please [open an issue in this repo](https://github.com/devrellabs/pets-workshop/issues).)
 
-# Azure Boards Status 
+# Azure Boards Statuz
 
 [![Board Status](https://dev.azure.com/PUnlimited/915ef36c-5c6d-47d3-a3af-c7570cefb4b9/f71d58d2-562e-4943-ac2f-10cf5c90caf7/_apis/work/boardbadge/d55d864f-57ca-474c-88a0-bc9eacf0cccb)](https://dev.azure.com/PUnlimited/915ef36c-5c6d-47d3-a3af-c7570cefb4b9/_boards/board/t/f71d58d2-562e-4943-ac2f-10cf5c90caf7/Stories/)
 
@@ -50,4 +54,15 @@ This project is provided as-is, and may be updated over time. If you have questi
 # Integrations 
 
 - [![Azure DevOps Dashboard](/images/azure_devops_dashboard_icon.png)<br/>Azure DevOps Dashboard](https://dev.azure.com/PUnlimited/PetsWorkshop/_dashboards/dashboard/346a7268-ee7c-42e0-9beb-8000c9259df4)
+
+# Check out the GitHub Monthly Enterprise Roundup (MER)
+GitHub is shipping new features, product updates, and best practices faster than ever. To help you stay ahead, the GitHub Enterprise Advocacy team curates a monthly roundup — bringing you a concise, enterprise-focused summary of the most important updates you might have missed.
+
+In these posts, you’ll find a carefully selected list of key innovations, expert insights, and must-know resources—guided by feedback from GitHub’s largest customers—to help your team innovate faster, boost productivity and enhance security.
+
+Share with your teams and stakeholders so they can also get the most out of their GitHub experience. 
+
+| GitHub Monthly Enterprise Roundup (MER) |          | Follow **GitHub Enterprise** on **LinkedIn** to be notified of each new post |
+|---------|---------|---------|
+| <a href="https://gh.io/mer"><img src="./images/gh_io_mer.png" width="500" height="500"></a> |          | <a href="https://gh.io/lighe"><img src="./images/gh_io_lighe.png" width="500" height="500"></a> |
 
