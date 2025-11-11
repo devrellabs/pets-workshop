@@ -1,0 +1,14 @@
+name: Check for linked work item
+
+on:
+  pull_request:
+    types: [opened, reopened, edited]
+    branches:
+      - main
+
+jobs:
+   check-for-ab-work-item:
+    name: check for linked work item
+    runs-on: ubuntu-latest
+    steps:
+      - uses: danhellem/github-actions-pr-is-linked-to-work-item@main
