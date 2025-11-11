@@ -41,4 +41,3 @@ When the user wants to "create child stories for feature" and passes the work it
 2. Fetch wiki page content from `https://dev.azure.com/PUnlimited/PetsWorkshop/_wiki/wikis/PetsWorkshop.wiki/6/Defining-Good-Features`
 
 3. Go through the description, title and comments of the feature. Create child user stories based on the description and comments of the feature. Each user story should follow the guidelines in the wiki page `https://dev.azure.com/PUnlimited/PetsWorkshop/_wiki/wikis/PetsWorkshop.wiki/11/Defining-Good-User-Stories`. Use `wit_add_child_work_items` tool to create child work items. Create only necessary user stories. They need to have enough detail for coding agent to get work done. But not too much so that only one small change will be made per story. Use the area path and iteration path of the feature. Format of the description should be 'Markdown'. Set `format` to 'Markdown' when creating the user stories.
-

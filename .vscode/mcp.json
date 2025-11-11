@@ -10,7 +10,16 @@
     "ado": {
       "type": "stdio",
       "command": "npx",
-      "args": ["-y", "@azure-devops/mcp", "${input:ado_org}", "-d", "core", "work", "work-items", "wiki", "test-plans"]
+      "args": [
+        "-y", 
+        "@azure-devops/mcp", 
+        "${input:ado_org}", 
+        "-d", 
+        "core", 
+        "work", 
+        "work-items", 
+        "wiki", 
+        "test-plans"]
     }
   }
 }
