@@ -1,9 +1,15 @@
 ##################################################################################################################
 # Build and deploy via Azure Pipelines
 # Refer to https://dev.azure.com/PUnlimited/PetsWorkshop/_boards/board/t/PetsWorkshop%20Team/Stories?workitem=642
-# NOTE: In the interest of time, we will emulate a multi-stage deployment for now. 
-# In the fullness of time we will complete the steps noted in the User Story.
-# Dave Burnison 2025-11-05
+# 
+# This pipeline deploys the Pets Workshop application to Dev, QA, and Production environments.
+# Each environment is deployed to a separate resource group (rg-Dev, rg-QA, rg-Production).
+# The pipeline uses Bicep templates from the infra folder to provision Azure resources.
+# 
+# Prerequisites:
+# - Azure service connection named 'AzureServiceConnection' (or update the variable)
+# - Environments configured in Azure DevOps: Dev, QA, Production
+# - Appropriate permissions to deploy at subscription scope
 ##################################################################################################################
 
 trigger:
@@ -18,9 +24,9 @@ pool:
 
 variables:
   buildConfiguration: 'Release'
-  pythonVersions: '["3.12", "3.13", "3.14"]'  
-  mode: 'emulate'
-  # mode: 'execute'
+  pythonVersions: '["3.12", "3.13", "3.14"]'
+  azureSubscription: 'AzureServiceConnection' # Update with your Azure service connection name
+  location: 'eastus' # Update with your preferred Azure location
 
 ###################################################################
 # CI Stage                                                        #
@@ -30,15 +36,38 @@ stages:
   displayName: CI
   jobs:
   - job: Build
-    displayName: 'Build the app'
+    displayName: 'Build and publish container images'
     
     steps:
     - checkout: self
       displayName: 'Checkout code'
     
-    - script: echo "Task Succeeded"
-      condition: and(succeeded(), eq(variables['mode'], 'emulate'))
-      displayName: 'Build emulation'
+    - task: Docker@2
+      displayName: 'Build client Docker image'
+      inputs:
+        command: build
+        repository: 'client'
+        dockerfile: '$(Build.SourcesDirectory)/client/Dockerfile'
+        tags: |
+          $(Build.BuildId)
+          latest
+    
+    - task: Docker@2
+      displayName: 'Build server Docker image'
+      inputs:
+        command: build
+        repository: 'server'
+        dockerfile: '$(Build.SourcesDirectory)/server/Dockerfile'
+        tags: |
+          $(Build.BuildId)
+          latest
+    
+    - task: PublishPipelineArtifact@1
+      displayName: 'Publish Bicep templates'
+      inputs:
+        targetPath: '$(Build.SourcesDirectory)/infra'
+        artifact: 'infra'
+        publishLocation: 'pipeline'
 
   - job: TestMatrix
     displayName: 'Test with Multiple Python Versions'
@@ -96,29 +125,119 @@ stages:
   displayName: Dev
   dependsOn: CI
   variables:
-    slot: Dev
+    environmentName: 'Dev'
+    resourceGroupName: 'Dev'
 
   jobs:
-  - deployment: DeployWeb
-    displayName: Deploy and test
-    # creates an environment if it doesn't exist
+  - deployment: DeployInfrastructure
+    displayName: 'Deploy infrastructure'
     environment: 'Dev'
     strategy:
       runOnce:
         deploy:
           steps:
-
-          - script: echo "Task Succeeded"
-            condition: and(succeeded(), eq(variables['mode'], 'emulate'))
-            displayName: 'Becep Template Execution emulation'
-
-          - script: echo "Task Succeeded"
-            condition: and(succeeded(), eq(variables['mode'], 'emulate'))
-            displayName: 'Deploy Container App emulation'
-
-          - script: echo "Task Succeeded"
-            condition: and(succeeded(), eq(variables['mode'], 'emulate'))
-            displayName: 'Playwright UI Tests emulation'
+          - checkout: self
+            displayName: 'Checkout code'
+          
+          - download: current
+            artifact: infra
+            displayName: 'Download Bicep templates'
+          
+          - task: AzureCLI@2
+            displayName: 'Deploy Bicep template'
+            inputs:
+              azureSubscription: $(azureSubscription)
+              scriptType: 'bash'
+              scriptLocation: 'inlineScript'
+              inlineScript: |
+                # Deploy the Bicep template at subscription scope
+                az deployment sub create \
+                  --name "$(environmentName)-$(Build.BuildId)" \
+                  --location $(location) \
+                  --template-file $(Pipeline.Workspace)/infra/main.bicep \
+                  --parameters environmentName=$(environmentName) \
+                  --parameters location=$(location) \
+                  --parameters clientExists=false \
+                  --parameters serverExists=false \
+                  --parameters principalId=$(az ad signed-in-user show --query id -o tsv) \
+                  --parameters principalType=User
+                
+                # Get outputs
+                ACR_ENDPOINT=$(az deployment sub show \
+                  --name "$(environmentName)-$(Build.BuildId)" \
+                  --query properties.outputs.AZURE_CONTAINER_REGISTRY_ENDPOINT.value -o tsv)
+                
+                echo "##vso[task.setvariable variable=acrEndpoint;isOutput=true]$ACR_ENDPOINT"
+                echo "Container Registry Endpoint: $ACR_ENDPOINT"
+            name: deployBicep
+  
+  - job: PushImages
+    displayName: 'Push container images to ACR'
+    dependsOn: DeployInfrastructure
+    variables:
+      acrEndpoint: $[ dependencies.DeployInfrastructure.outputs['deployBicep.deployBicep.acrEndpoint'] ]
+    
+    steps:
+    - checkout: self
+      displayName: 'Checkout code'
+    
+    - task: AzureCLI@2
+      displayName: 'Login to ACR and push images'
+      inputs:
+        azureSubscription: $(azureSubscription)
+        scriptType: 'bash'
+        scriptLocation: 'inlineScript'
+        inlineScript: |
+          # Login to ACR
+          az acr login --name $(acrEndpoint)
+          
+          # Build and push client image
+          docker build -t $(acrEndpoint)/client:$(Build.BuildId) -t $(acrEndpoint)/client:latest ./client
+          docker push $(acrEndpoint)/client:$(Build.BuildId)
+          docker push $(acrEndpoint)/client:latest
+          
+          # Build and push server image
+          docker build -t $(acrEndpoint)/server:$(Build.BuildId) -t $(acrEndpoint)/server:latest ./server
+          docker push $(acrEndpoint)/server:$(Build.BuildId)
+          docker push $(acrEndpoint)/server:latest
+  
+  - deployment: UpdateContainerApps
+    displayName: 'Update container apps'
+    dependsOn: 
+      - DeployInfrastructure
+      - PushImages
+    environment: 'Dev'
+    variables:
+      acrEndpoint: $[ dependencies.DeployInfrastructure.outputs['deployBicep.deployBicep.acrEndpoint'] ]
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - checkout: self
+            displayName: 'Checkout code'
+          
+          - download: current
+            artifact: infra
+            displayName: 'Download Bicep templates'
+          
+          - task: AzureCLI@2
+            displayName: 'Update container apps'
+            inputs:
+              azureSubscription: $(azureSubscription)
+              scriptType: 'bash'
+              scriptLocation: 'inlineScript'
+              inlineScript: |
+                # Redeploy with updated images
+                az deployment sub create \
+                  --name "$(environmentName)-update-$(Build.BuildId)" \
+                  --location $(location) \
+                  --template-file $(Pipeline.Workspace)/infra/main.bicep \
+                  --parameters environmentName=$(environmentName) \
+                  --parameters location=$(location) \
+                  --parameters clientExists=true \
+                  --parameters serverExists=true \
+                  --parameters principalId=$(az ad signed-in-user show --query id -o tsv) \
+                  --parameters principalType=User
 
 ###################################################################
 # QA Stage                                                        #
@@ -127,58 +246,238 @@ stages:
   displayName: QA
   dependsOn: Dev
   variables:
-    slot: QA
+    environmentName: 'QA'
+    resourceGroupName: 'QA'
 
   jobs:
-  - deployment: DeployWeb
-    displayName: Deploy and test
-    # creates an environment if it doesn't exist
+  - deployment: DeployInfrastructure
+    displayName: 'Deploy infrastructure'
     environment: 'QA'
     strategy:
       runOnce:
         deploy:
           steps:
+          - checkout: self
+            displayName: 'Checkout code'
           
-          - script: echo "Task Succeeded"
-            condition: and(succeeded(), eq(variables['mode'], 'emulate'))
-            displayName: 'Becep Template Execution emulation'
-
-          - script: echo "Task Succeeded"
-            condition: and(succeeded(), eq(variables['mode'], 'emulate'))
-            displayName: 'Deploy Container App emulation'
-
-          - script: echo "Task Succeeded"
-            condition: and(succeeded(), eq(variables['mode'], 'emulate'))
-            displayName: 'Playwright UI Tests emulation'
+          - download: current
+            artifact: infra
+            displayName: 'Download Bicep templates'
+          
+          - task: AzureCLI@2
+            displayName: 'Deploy Bicep template'
+            inputs:
+              azureSubscription: $(azureSubscription)
+              scriptType: 'bash'
+              scriptLocation: 'inlineScript'
+              inlineScript: |
+                # Deploy the Bicep template at subscription scope
+                az deployment sub create \
+                  --name "$(environmentName)-$(Build.BuildId)" \
+                  --location $(location) \
+                  --template-file $(Pipeline.Workspace)/infra/main.bicep \
+                  --parameters environmentName=$(environmentName) \
+                  --parameters location=$(location) \
+                  --parameters clientExists=false \
+                  --parameters serverExists=false \
+                  --parameters principalId=$(az ad signed-in-user show --query id -o tsv) \
+                  --parameters principalType=User
+                
+                # Get outputs
+                ACR_ENDPOINT=$(az deployment sub show \
+                  --name "$(environmentName)-$(Build.BuildId)" \
+                  --query properties.outputs.AZURE_CONTAINER_REGISTRY_ENDPOINT.value -o tsv)
+                
+                echo "##vso[task.setvariable variable=acrEndpoint;isOutput=true]$ACR_ENDPOINT"
+                echo "Container Registry Endpoint: $ACR_ENDPOINT"
+            name: deployBicep
+  
+  - job: PushImages
+    displayName: 'Push container images to ACR'
+    dependsOn: DeployInfrastructure
+    variables:
+      acrEndpoint: $[ dependencies.DeployInfrastructure.outputs['deployBicep.deployBicep.acrEndpoint'] ]
+    
+    steps:
+    - checkout: self
+      displayName: 'Checkout code'
+    
+    - task: AzureCLI@2
+      displayName: 'Login to ACR and push images'
+      inputs:
+        azureSubscription: $(azureSubscription)
+        scriptType: 'bash'
+        scriptLocation: 'inlineScript'
+        inlineScript: |
+          # Login to ACR
+          az acr login --name $(acrEndpoint)
+          
+          # Build and push client image
+          docker build -t $(acrEndpoint)/client:$(Build.BuildId) -t $(acrEndpoint)/client:latest ./client
+          docker push $(acrEndpoint)/client:$(Build.BuildId)
+          docker push $(acrEndpoint)/client:latest
+          
+          # Build and push server image
+          docker build -t $(acrEndpoint)/server:$(Build.BuildId) -t $(acrEndpoint)/server:latest ./server
+          docker push $(acrEndpoint)/server:$(Build.BuildId)
+          docker push $(acrEndpoint)/server:latest
+  
+  - deployment: UpdateContainerApps
+    displayName: 'Update container apps'
+    dependsOn: 
+      - DeployInfrastructure
+      - PushImages
+    environment: 'QA'
+    variables:
+      acrEndpoint: $[ dependencies.DeployInfrastructure.outputs['deployBicep.deployBicep.acrEndpoint'] ]
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - checkout: self
+            displayName: 'Checkout code'
+          
+          - download: current
+            artifact: infra
+            displayName: 'Download Bicep templates'
+          
+          - task: AzureCLI@2
+            displayName: 'Update container apps'
+            inputs:
+              azureSubscription: $(azureSubscription)
+              scriptType: 'bash'
+              scriptLocation: 'inlineScript'
+              inlineScript: |
+                # Redeploy with updated images
+                az deployment sub create \
+                  --name "$(environmentName)-update-$(Build.BuildId)" \
+                  --location $(location) \
+                  --template-file $(Pipeline.Workspace)/infra/main.bicep \
+                  --parameters environmentName=$(environmentName) \
+                  --parameters location=$(location) \
+                  --parameters clientExists=true \
+                  --parameters serverExists=true \
+                  --parameters principalId=$(az ad signed-in-user show --query id -o tsv) \
+                  --parameters principalType=User
 
 ###################################################################
-# Production  Stage                                               #
+# Production Stage                                                #
 ###################################################################
 - stage: Production
   displayName: Production
   dependsOn: QA
   variables:
-    slot: Production
+    environmentName: 'Production'
+    resourceGroupName: 'Production'
 
   jobs:
-  - deployment: DeployWeb
-    displayName: Deploy
-    # creates an environment if it doesn't exist
+  - deployment: DeployInfrastructure
+    displayName: 'Deploy infrastructure'
     environment: 'Production'
     strategy:
       runOnce:
         deploy:
           steps:
+          - checkout: self
+            displayName: 'Checkout code'
           
-          - script: echo "Task Succeeded"
-            condition: and(succeeded(), eq(variables['mode'], 'emulate'))
-            displayName: 'Becep Template Execution emulation'
-
-          - script: echo "Task Succeeded"
-            condition: and(succeeded(), eq(variables['mode'], 'emulate'))
-            displayName: 'Deploy Container App emulation'
-
-          - script: echo "Task Succeeded"
-            condition: and(succeeded(), eq(variables['mode'], 'emulate'))
-            displayName: 'Playwright UI Tests emulation'
+          - download: current
+            artifact: infra
+            displayName: 'Download Bicep templates'
+          
+          - task: AzureCLI@2
+            displayName: 'Deploy Bicep template'
+            inputs:
+              azureSubscription: $(azureSubscription)
+              scriptType: 'bash'
+              scriptLocation: 'inlineScript'
+              inlineScript: |
+                # Deploy the Bicep template at subscription scope
+                az deployment sub create \
+                  --name "$(environmentName)-$(Build.BuildId)" \
+                  --location $(location) \
+                  --template-file $(Pipeline.Workspace)/infra/main.bicep \
+                  --parameters environmentName=$(environmentName) \
+                  --parameters location=$(location) \
+                  --parameters clientExists=false \
+                  --parameters serverExists=false \
+                  --parameters principalId=$(az ad signed-in-user show --query id -o tsv) \
+                  --parameters principalType=User
+                
+                # Get outputs
+                ACR_ENDPOINT=$(az deployment sub show \
+                  --name "$(environmentName)-$(Build.BuildId)" \
+                  --query properties.outputs.AZURE_CONTAINER_REGISTRY_ENDPOINT.value -o tsv)
+                
+                echo "##vso[task.setvariable variable=acrEndpoint;isOutput=true]$ACR_ENDPOINT"
+                echo "Container Registry Endpoint: $ACR_ENDPOINT"
+            name: deployBicep
+  
+  - job: PushImages
+    displayName: 'Push container images to ACR'
+    dependsOn: DeployInfrastructure
+    variables:
+      acrEndpoint: $[ dependencies.DeployInfrastructure.outputs['deployBicep.deployBicep.acrEndpoint'] ]
+    
+    steps:
+    - checkout: self
+      displayName: 'Checkout code'
+    
+    - task: AzureCLI@2
+      displayName: 'Login to ACR and push images'
+      inputs:
+        azureSubscription: $(azureSubscription)
+        scriptType: 'bash'
+        scriptLocation: 'inlineScript'
+        inlineScript: |
+          # Login to ACR
+          az acr login --name $(acrEndpoint)
+          
+          # Build and push client image
+          docker build -t $(acrEndpoint)/client:$(Build.BuildId) -t $(acrEndpoint)/client:latest ./client
+          docker push $(acrEndpoint)/client:$(Build.BuildId)
+          docker push $(acrEndpoint)/client:latest
+          
+          # Build and push server image
+          docker build -t $(acrEndpoint)/server:$(Build.BuildId) -t $(acrEndpoint)/server:latest ./server
+          docker push $(acrEndpoint)/server:$(Build.BuildId)
+          docker push $(acrEndpoint)/server:latest
+  
+  - deployment: UpdateContainerApps
+    displayName: 'Update container apps'
+    dependsOn: 
+      - DeployInfrastructure
+      - PushImages
+    environment: 'Production'
+    variables:
+      acrEndpoint: $[ dependencies.DeployInfrastructure.outputs['deployBicep.deployBicep.acrEndpoint'] ]
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - checkout: self
+            displayName: 'Checkout code'
+          
+          - download: current
+            artifact: infra
+            displayName: 'Download Bicep templates'
+          
+          - task: AzureCLI@2
+            displayName: 'Update container apps'
+            inputs:
+              azureSubscription: $(azureSubscription)
+              scriptType: 'bash'
+              scriptLocation: 'inlineScript'
+              inlineScript: |
+                # Redeploy with updated images
+                az deployment sub create \
+                  --name "$(environmentName)-update-$(Build.BuildId)" \
+                  --location $(location) \
+                  --template-file $(Pipeline.Workspace)/infra/main.bicep \
+                  --parameters environmentName=$(environmentName) \
+                  --parameters location=$(location) \
+                  --parameters clientExists=true \
+                  --parameters serverExists=true \
+                  --parameters principalId=$(az ad signed-in-user show --query id -o tsv) \
+                  --parameters principalType=User
 
