@@ -175,7 +175,7 @@ stages:
     displayName: 'Push container images to ACR'
     dependsOn: DeployInfrastructure
     variables:
-      acrEndpoint: $[ dependencies.DeployInfrastructure.outputs['deployBicep.deployBicep.acrEndpoint'] ]
+      acrEndpoint: $[ dependencies.DeployInfrastructure.outputs['DeployInfrastructure.deployBicep.acrEndpoint'] ]
     
     steps:
     - checkout: self
@@ -208,7 +208,7 @@ stages:
       - PushImages
     environment: 'Dev'
     variables:
-      acrEndpoint: $[ dependencies.DeployInfrastructure.outputs['deployBicep.deployBicep.acrEndpoint'] ]
+      acrEndpoint: $[ dependencies.DeployInfrastructure.outputs['DeployInfrastructure.deployBicep.acrEndpoint'] ]
     strategy:
       runOnce:
         deploy:
@@ -296,7 +296,7 @@ stages:
     displayName: 'Push container images to ACR'
     dependsOn: DeployInfrastructure
     variables:
-      acrEndpoint: $[ dependencies.DeployInfrastructure.outputs['deployBicep.deployBicep.acrEndpoint'] ]
+      acrEndpoint: $[ dependencies.DeployInfrastructure.outputs['DeployInfrastructure.deployBicep.acrEndpoint'] ]
     
     steps:
     - checkout: self
@@ -329,7 +329,7 @@ stages:
       - PushImages
     environment: 'QA'
     variables:
-      acrEndpoint: $[ dependencies.DeployInfrastructure.outputs['deployBicep.deployBicep.acrEndpoint'] ]
+      acrEndpoint: $[ dependencies.DeployInfrastructure.outputs['DeployInfrastructure.deployBicep.acrEndpoint'] ]
     strategy:
       runOnce:
         deploy:
@@ -417,7 +417,7 @@ stages:
     displayName: 'Push container images to ACR'
     dependsOn: DeployInfrastructure
     variables:
-      acrEndpoint: $[ dependencies.DeployInfrastructure.outputs['deployBicep.deployBicep.acrEndpoint'] ]
+      acrEndpoint: $[ dependencies.DeployInfrastructure.outputs['DeployInfrastructure.deployBicep.acrEndpoint'] ]
     
     steps:
     - checkout: self
@@ -450,7 +450,7 @@ stages:
       - PushImages
     environment: 'Production'
     variables:
-      acrEndpoint: $[ dependencies.DeployInfrastructure.outputs['deployBicep.deployBicep.acrEndpoint'] ]
+      acrEndpoint: $[ dependencies.DeployInfrastructure.outputs['DeployInfrastructure.deployBicep.acrEndpoint'] ]
     strategy:
       runOnce:
         deploy:
