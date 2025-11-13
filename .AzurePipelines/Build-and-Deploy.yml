@@ -3,7 +3,7 @@
 # Refer to https://dev.azure.com/PUnlimited/PetsWorkshop/_boards/board/t/PetsWorkshop%20Team/Stories?workitem=642
 # 
 # This pipeline deploys the Pets Workshop application to Dev, QA, and Production environments.
-# Each environment is deployed to a separate resource group (rg-Dev, rg-QA, rg-Production).
+# Each environment is deployed to a separate resource group (Tailspin-Shelter-Dev, Tailspin-Shelter-QA, Tailspin-Shelter-Production).
 # The pipeline uses Bicep templates from the infra folder to provision Azure resources.
 # 
 # Prerequisites:

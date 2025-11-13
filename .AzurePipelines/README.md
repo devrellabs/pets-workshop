@@ -67,9 +67,9 @@ You can also create a variable group to manage these centrally:
 
 The pipeline will create the following resource groups in your Azure subscription:
 
-- `rg-Dev`: Contains Dev environment resources
-- `rg-QA`: Contains QA environment resources
-- `rg-Production`: Contains Production environment resources
+- `Tailspin-Shelter-Dev`: Contains Dev environment resources
+- `Tailspin-Shelter-QA`: Contains QA environment resources
+- `Tailspin-Shelter-Production`: Contains Production environment resources
 
 Each resource group will contain:
 - Azure Container Registry (shared within the environment)
