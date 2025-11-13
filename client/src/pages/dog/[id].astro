@@ -6,20 +6,114 @@ import DogDetails from '../../components/DogDetails.svelte';
 const { id } = Astro.params;
 const dogId = parseInt(id || '0');
 
+// Fetch dog data server-side for SEO
+interface Dog {
+  id: number;
+  name: string;
+  breed: string;
+  age: number;
+  description: string;
+  gender: string;
+  status: 'AVAILABLE' | 'PENDING' | 'ADOPTED';
+}
+
+let dog: Dog | null = null;
+let error = false;
+
+try {
+  // Use the internal API endpoint
+  const apiUrl = `${Astro.url.origin}/api/dogs/${dogId}`;
+  const response = await fetch(apiUrl);
+  if (response.ok) {
+    dog = await response.json();
+  } else {
+    error = true;
+  }
+} catch (err) {
+  error = true;
+  console.error('Error fetching dog data:', err);
+}
+
+// Generate SEO metadata
+const pageTitle = dog 
+  ? `${dog.name} - ${dog.breed} for Adoption | Tailspin Shelter`
+  : 'Dog Details - Tailspin Shelter';
+
+const pageDescription = dog
+  ? `Meet ${dog.name}, a ${dog.age}-year-old ${dog.breed} available for adoption in Seattle. ${dog.description.substring(0, 120)}...`
+  : 'Learn more about this wonderful dog available for adoption at Tailspin Shelter in Seattle.';
+
+// Structured data for dog details
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://tailspinshelter.com/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Dogs",
+      "item": "https://tailspinshelter.com/#dogs"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": dog?.name || "Dog Details",
+      "item": `https://tailspinshelter.com/dog/${dogId}`
+    }
+  ]
+};
+
+// Animal/Pet schema
+const animalSchema = dog ? {
+  "@context": "https://schema.org",
+  "@type": "Animal",
+  "name": dog.name,
+  "description": dog.description,
+  "species": "Dog",
+  "breed": dog.breed,
+  "gender": dog.gender,
+  "age": `${dog.age} years`,
+  "availableForAdoption": dog.status === 'AVAILABLE',
+  "location": {
+    "@type": "Place",
+    "name": "Tailspin Shelter",
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Seattle",
+      "addressRegion": "WA",
+      "addressCountry": "US"
+    }
+  }
+} : null;
+
+const structuredData = animalSchema ? [breadcrumbSchema, animalSchema] : [breadcrumbSchema];
+
 const props = { dogId };
 ---
 
-<Layout title="Dog Details - Tailspin Shelter">
-  <div class="py-8">
+<Layout 
+  title={pageTitle}
+  description={pageDescription}
+  canonical={`/dog/${dogId}`}
+  structuredData={structuredData}
+  type="article"
+>
+  <article class="py-8">
     <DogDetails client:load dogId={dogId} />
     
-    <div class="mt-8">
-      <a href="/" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all duration-300 inline-flex items-center">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+    <nav class="mt-8" aria-label="Page navigation">
+      <a href="/" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all duration-300 inline-flex items-center" aria-label="Return to all available dogs">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
           <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" />
         </svg>
         Back to All Dogs
       </a>
-    </div>
-  </div>
+    </nav>
+  </article>
 </Layout>

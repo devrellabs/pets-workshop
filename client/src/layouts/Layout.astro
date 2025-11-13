@@ -4,19 +4,67 @@ import "../styles/global.css"
 
 interface Props {
   title?: string;
+  description?: string;
+  image?: string;
+  canonical?: string;
+  type?: string;
+  structuredData?: object[];
 }
 
-const { title = "Tailspin Shelter" } = Astro.props;
+const { 
+  title = "Tailspin Shelter", 
+  description = "Seattle's premier dog shelter and adoption center. Find your perfect companion from our wonderful selection of rescue dogs looking for their forever homes.",
+  image = "/zava-logo.svg",
+  canonical,
+  type = "website",
+  structuredData = []
+} = Astro.props;
+
+const siteUrl = Astro.site || "https://tailspinshelter.com";
+const canonicalURL = canonical ? new URL(canonical, siteUrl) : new URL(Astro.url.pathname, siteUrl);
+const imageUrl = new URL(image, siteUrl);
 ---
 
 <!doctype html>
 <html lang="en" class="dark">
     <head>
         <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
         <meta name="generator" content={Astro.generator} />
+        
+        <!-- Primary Meta Tags -->
         <title>{title}</title>
+        <meta name="title" content={title} />
+        <meta name="description" content={description} />
+        <link rel="canonical" href={canonicalURL} />
+        <meta name="language" content="en" />
+        
+        <!-- Open Graph / Facebook -->
+        <meta property="og:type" content={type} />
+        <meta property="og:url" content={canonicalURL} />
+        <meta property="og:title" content={title} />
+        <meta property="og:description" content={description} />
+        <meta property="og:image" content={imageUrl} />
+        <meta property="og:locale" content="en_US" />
+        <meta property="og:site_name" content="Tailspin Shelter" />
+        
+        <!-- Twitter -->
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:url" content={canonicalURL} />
+        <meta name="twitter:title" content={title} />
+        <meta name="twitter:description" content={description} />
+        <meta name="twitter:image" content={imageUrl} />
+        
+        <!-- Robots -->
+        <meta name="robots" content="index, follow" />
+        <meta name="googlebot" content="index, follow" />
+        
+        <!-- Structured Data -->
+        {structuredData.length > 0 && structuredData.map((data) => (
+          <script type="application/ld+json" set:html={JSON.stringify(data)} />
+        ))}
+        
         <!-- Preconnect to improve font loading -->
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -24,7 +72,7 @@ const { title = "Tailspin Shelter" } = Astro.props;
     </head>
     <body class="min-h-screen bg-slate-900 text-white transition-colors duration-300 m-0 w-full h-full font-sans">
         <Header />
-        <main class="container mx-auto py-6 h-full max-w-7xl">
+        <main class="container mx-auto py-6 h-full max-w-7xl" role="main" id="main-content">
             <div class="px-4 sm:px-6 lg:px-8">
                 <slot />
             </div>

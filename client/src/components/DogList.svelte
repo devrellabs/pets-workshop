@@ -32,8 +32,8 @@
     });
 </script>
 
-<div>
-    <h2 class="text-2xl font-medium mb-6 text-slate-100">Available Dogs</h2>
+<section aria-labelledby="available-dogs-heading">
+    <h2 id="available-dogs-heading" class="text-2xl font-medium mb-6 text-slate-100">Available Dogs for Adoption</h2>
     
     {#if loading}
         <!-- loading animation -->
@@ -52,37 +52,39 @@
         </div>
     {:else if error}
         <!-- error display -->
-        <div class="text-center py-12 bg-slate-800/50 backdrop-blur-sm rounded-xl border border-slate-700">
+        <div class="text-center py-12 bg-slate-800/50 backdrop-blur-sm rounded-xl border border-slate-700" role="alert">
             <p class="text-red-400">{error}</p>
         </div>
     {:else if dogs.length === 0}
         <!-- no dogs found -->
-        <div class="text-center py-12 bg-slate-800/50 backdrop-blur-sm rounded-xl border border-slate-700">
-            <p class="text-slate-300">No dogs available at the moment.</p>
+        <div class="text-center py-12 bg-slate-800/50 backdrop-blur-sm rounded-xl border border-slate-700" role="status">
+            <p class="text-slate-300">No dogs available at the moment. Please check back soon!</p>
         </div>
     {:else}
         <!-- dog list -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" role="list">
             {#each dogs as dog (dog.id)}
                 <a 
                     href={`/dog/${dog.id}`} 
                     class="group block bg-slate-800/60 backdrop-blur-sm rounded-xl overflow-hidden shadow-lg border border-slate-700/50 hover:border-blue-500/50 hover:shadow-blue-500/10 hover:shadow-xl transition-all duration-300 hover:translate-y-[-6px]"
+                    role="listitem"
+                    aria-label={`View details for ${dog.name}, a ${dog.breed}`}
                 >
-                    <div class="p-6 relative">
+                    <article class="p-6 relative">
                         <div class="absolute inset-0 bg-gradient-to-r from-blue-600/10 to-purple-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                         <div class="relative z-10">
                             <h3 class="text-xl font-semibold text-slate-100 mb-2 group-hover:text-blue-400 transition-colors">{dog.name}</h3>
                             <p class="text-slate-400 mb-4">{dog.breed}</p>
                             <div class="mt-4 text-sm text-blue-400 font-medium flex items-center">
                                 <span>View details</span>
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1 transform transition-transform duration-300 group-hover:translate-x-2" viewBox="0 0 20 20" fill="currentColor">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1 transform transition-transform duration-300 group-hover:translate-x-2" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                                     <path fill-rule="evenodd" d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />
                                 </svg>
                             </div>
                         </div>
-                    </div>
+                    </article>
                 </a>
             {/each}
         </div>
     {/if}
-</div>
+</section>
