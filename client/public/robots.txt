@@ -1,0 +1,9 @@
+# Tailspin Shelter - Robots.txt
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://tailspinshelter.com/sitemap.xml
+
+# Crawl delay (optional, can help prevent server overload)
+Crawl-delay: 1

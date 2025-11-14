@@ -1,46 +1,136 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import "../styles/global.css";
-// about page
+
+// Structured data for About page
+const organizationSchema = {
+  "@context": "https://schema.org",
+  "@type": ["Organization", "AnimalShelter", "NGO"],
+  "name": "Tailspin Shelter",
+  "alternateName": "Tailspin Dog Shelter",
+  "description": "Founded in 2015 by Kayo Miwa, Tailspin Shelter is a Seattle-based dog rescue and adoption center supported by Zava, dedicated to giving every dog a second chance at happiness.",
+  "url": "https://tailspinshelter.com",
+  "logo": "https://tailspinshelter.com/zava-logo.svg",
+  "foundingDate": "2015",
+  "foundingLocation": {
+    "@type": "Place",
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Seattle",
+      "addressRegion": "WA",
+      "addressCountry": "US"
+    }
+  },
+  "founder": {
+    "@type": "Person",
+    "name": "Kayo Miwa",
+    "jobTitle": "Chief Executive Officer",
+    "worksFor": {
+      "@type": "Organization",
+      "name": "Zava"
+    }
+  },
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "Seattle",
+    "addressRegion": "WA",
+    "addressCountry": "US"
+  },
+  "areaServed": {
+    "@type": "City",
+    "name": "Seattle"
+  },
+  "knowsAbout": [
+    "Dog Adoption",
+    "Animal Rescue",
+    "Pet Care",
+    "Animal Welfare",
+    "Dog Behavioral Training",
+    "Veterinary Care"
+  ],
+  "memberOf": {
+    "@type": "Organization",
+    "name": "Zava"
+  },
+  "nonprofitStatus": "NonprofitANBI"
+};
+
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://tailspinshelter.com/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "About",
+      "item": "https://tailspinshelter.com/about"
+    }
+  ]
+};
+
+const structuredData = [organizationSchema, breadcrumbSchema];
 ---
 
-<Layout title="About - Tailspin Shelter">
-  <section class="max-w-5xl mx-auto px-4 py-8">
+<Layout 
+  title="About Tailspin Shelter | Seattle Dog Rescue Since 2015"
+  description="Learn about Tailspin Shelter, Seattle's premier dog rescue founded in 2015 by Kayo Miwa. Supported by Zava, we're dedicated to finding forever homes for rescue dogs."
+  canonical="/about"
+  structuredData={structuredData}
+>
+  <article class="max-w-5xl mx-auto px-4 py-8">
     <div class="bg-slate-800/70 backdrop-blur-sm border border-slate-700 rounded-xl shadow-lg p-8 transition-colors duration-300">
-      <h2 class="text-blue-400 text-4xl mb-8 pb-3 border-b border-slate-600 font-bold">About Tailspin Shelter</h2>
+      <h1 class="text-blue-400 text-4xl mb-8 pb-3 border-b border-slate-600 font-bold">About Tailspin Shelter</h1>
       
       <div class="space-y-6">
-        <p class="text-lg leading-relaxed text-slate-300">
-          Nestled in the heart of Seattle, Tailspin Shelter is a warm, welcoming haven for dogs of all breeds and backgrounds. Founded in 2015 by Kayo Miwa, Zava's Chief Executive Officer, this shelter began as a heartfelt extension of Zava's social impact initiatives. Kayo, a biomedical engineer with a lifelong passion for dogs, envisioned a place where every dog could find not just shelter, but a path to a loving, forever home. What started as a personal mission has blossomed into a community cornerstone, with many Zava employees volunteering their time and expertise to support our cause.
-        </p>
+        <section>
+          <h2 class="sr-only">Our Story</h2>
+          <p class="text-lg leading-relaxed text-slate-300">
+            Nestled in the heart of Seattle, Tailspin Shelter is a warm, welcoming haven for dogs of all breeds and backgrounds. Founded in 2015 by Kayo Miwa, Zava's Chief Executive Officer, this shelter began as a heartfelt extension of Zava's social impact initiatives. Kayo, a biomedical engineer with a lifelong passion for dogs, envisioned a place where every dog could find not just shelter, but a path to a loving, forever home. What started as a personal mission has blossomed into a community cornerstone, with many Zava employees volunteering their time and expertise to support our cause.
+          </p>
+        </section>
         
-        <p class="text-lg leading-relaxed text-slate-300">
-          For Kayo and the Zava team, Tailspin Shelter represents more than just corporate philanthropy—it's a way to give back to the community in a manner that's personally meaningful and aligned with their values. Just as Zava works to improve lives through innovative smart fiber technology, Tailspin Shelter transforms the lives of dogs and the families who adopt them. Our mission is to give every dog a second chance at a happy, healthy life, whether through finding forever homes, providing medical care, or offering behavioral training. Inspired by Seattle's vibrant and compassionate community, we've grown from a small foster network into a full-service shelter and adoption center.
-        </p>
+        <section>
+          <h2 class="sr-only">Our Mission</h2>
+          <p class="text-lg leading-relaxed text-slate-300">
+            For Kayo and the Zava team, Tailspin Shelter represents more than just corporate philanthropy—it's a way to give back to the community in a manner that's personally meaningful and aligned with their values. Just as Zava works to improve lives through innovative smart fiber technology, Tailspin Shelter transforms the lives of dogs and the families who adopt them. Our mission is to give every dog a second chance at a happy, healthy life, whether through finding forever homes, providing medical care, or offering behavioral training. Inspired by Seattle's vibrant and compassionate community, we've grown from a small foster network into a full-service shelter and adoption center.
+          </p>
+        </section>
         
-        <p class="text-lg leading-relaxed text-slate-300">
-          The name "Tailspin" reflects both the whirlwind of emotions dogs often experience when they first arrive — and the joyful, spinning tails we see when they find their perfect match. For us, a "tailspin" is a reminder of the transformations we witness daily: from uncertainty and fear to trust, love, and boundless energy. It's this journey that fuels our work and reminds us why we do what we do. Every wagging tail is a testament to resilience and hope, and a reflection of the compassionate spirit that drives both Tailspin Shelter and Zava's commitment to making a positive impact in the world.
-        </p>
+        <section>
+          <h2 class="sr-only">Why Tailspin?</h2>
+          <p class="text-lg leading-relaxed text-slate-300">
+            The name "Tailspin" reflects both the whirlwind of emotions dogs often experience when they first arrive — and the joyful, spinning tails we see when they find their perfect match. For us, a "tailspin" is a reminder of the transformations we witness daily: from uncertainty and fear to trust, love, and boundless energy. It's this journey that fuels our work and reminds us why we do what we do. Every wagging tail is a testament to resilience and hope, and a reflection of the compassionate spirit that drives both Tailspin Shelter and Zava's commitment to making a positive impact in the world.
+          </p>
+        </section>
         
-        <p class="text-lg leading-relaxed text-slate-300">
-          You can learn more about enterprise social impact from <a href="https://www.microsoft.com/en-us/corporate-responsibility/giving-nonprofits" target="_blank" rel="noopener noreferrer" class="text-blue-400 hover:text-blue-300 underline">Microsoft</a> and <a href="https://github.com/social-impact" target="_blank" rel="noopener noreferrer" class="text-blue-400 hover:text-blue-300 underline">GitHub</a>.
-        </p>
+        <section>
+          <h2 class="sr-only">Community Impact</h2>
+          <p class="text-lg leading-relaxed text-slate-300">
+            You can learn more about enterprise social impact from <a href="https://www.microsoft.com/en-us/corporate-responsibility/giving-nonprofits" target="_blank" rel="noopener noreferrer" class="text-blue-400 hover:text-blue-300 underline">Microsoft's corporate responsibility initiatives</a> and <a href="https://github.com/social-impact" target="_blank" rel="noopener noreferrer" class="text-blue-400 hover:text-blue-300 underline">GitHub's social impact programs</a>.
+          </p>
+        </section>
       </div>
       
-      <div class="mt-10 bg-slate-700/50 border-l-4 border-blue-500 p-5 rounded-r-lg">
+      <aside class="mt-10 bg-slate-700/50 border-l-4 border-blue-500 p-5 rounded-r-lg" aria-label="Disclaimer">
         <p class="text-sm text-slate-300 italic">
           <span class="font-medium text-blue-400">Note:</span> Tailspin Shelter is a fictional organization, created for this workshop.
         </p>
-      </div>
+      </aside>
       
-      <div class="mt-12 flex justify-center">
-        <a href="/" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all duration-300 hover:shadow-lg hover:shadow-blue-600/20 flex items-center">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+      <nav class="mt-12 flex justify-center" aria-label="Page navigation">
+        <a href="/" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all duration-300 hover:shadow-lg hover:shadow-blue-600/20 flex items-center" aria-label="Return to home page">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
             <path fill-rule="evenodd" d="M9.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L7.414 9H15a1 1 0 110 2H7.414l2.293 2.293a1 1 0 010 1.414z" clip-rule="evenodd" />
           </svg>
-          Back to Dogs
+          Back to Available Dogs
         </a>
-      </div>
+      </nav>
     </div>
-  </section>
+  </article>
 </Layout>

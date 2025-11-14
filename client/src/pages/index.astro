@@ -2,19 +2,85 @@
 import Layout from '../layouts/Layout.astro';
 import DogList from '../components/DogList.svelte';
 import "../styles/global.css";
+
+// Structured data for the homepage
+const organizationSchema = {
+  "@context": "https://schema.org",
+  "@type": ["Organization", "AnimalShelter"],
+  "name": "Tailspin Shelter",
+  "description": "Seattle's premier dog shelter and adoption center, supported by Zava, dedicated to finding forever homes for rescue dogs.",
+  "url": "https://tailspinshelter.com",
+  "logo": "https://tailspinshelter.com/zava-logo.svg",
+  "foundingDate": "2015",
+  "founder": {
+    "@type": "Person",
+    "name": "Kayo Miwa",
+    "jobTitle": "CEO of Zava"
+  },
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "Seattle",
+    "addressRegion": "WA",
+    "addressCountry": "US"
+  },
+  "areaServed": {
+    "@type": "City",
+    "name": "Seattle"
+  },
+  "sameAs": [
+    "https://github.com/social-impact",
+    "https://www.microsoft.com/en-us/corporate-responsibility/giving-nonprofits"
+  ],
+  "knowsAbout": ["Dog Adoption", "Animal Rescue", "Pet Care", "Animal Welfare"],
+  "slogan": "Find Your Forever Friend"
+};
+
+const localBusinessSchema = {
+  "@context": "https://schema.org",
+  "@type": "LocalBusiness",
+  "name": "Tailspin Shelter",
+  "image": "https://tailspinshelter.com/zava-logo.svg",
+  "description": "Seattle dog shelter offering adoption services for rescue dogs. Find your perfect companion today.",
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "Seattle",
+    "addressRegion": "WA",
+    "addressCountry": "US"
+  },
+  "priceRange": "Free",
+  "openingHours": "Mo-Su 09:00-18:00",
+  "telephone": "+1-206-555-0100"
+};
+
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [{
+    "@type": "ListItem",
+    "position": 1,
+    "name": "Home",
+    "item": "https://tailspinshelter.com/"
+  }]
+};
+
+const structuredData = [organizationSchema, localBusinessSchema, breadcrumbSchema];
 ---
 
-<Layout title="Tailspin Shelter - Find Your Forever Friend">
-  <div class="py-8">
+<Layout 
+  title="Tailspin Shelter | Seattle Dog Adoption & Rescue Center"
+  description="Adopt a rescue dog in Seattle. Tailspin Shelter offers loving dogs of all breeds and ages looking for their forever homes. Browse available dogs for adoption today."
+  structuredData={structuredData}
+>
+  <article class="py-8">
     <div class="max-w-3xl mb-10">
-      <h1 class="text-4xl font-bold mb-4 text-slate-100">Welcome to Tailspin Shelter</h1>
+      <h1 class="text-4xl font-bold mb-4 text-slate-100">Seattle Dog Adoption - Find Your Forever Friend</h1>
       <div class="flex items-center gap-3 mb-4">
         <p class="text-lg text-blue-400 italic">A Zava supported non-profit organization</p>
-        <img src="/zava-logo.svg" alt="Zava logo" class="h-8" />
+        <img src="/zava-logo.svg" alt="Zava - Supporting Tailspin Shelter" class="h-8" />
       </div>
-      <p class="text-xl text-slate-300">Find your perfect companion from our wonderful selection of dogs looking for their forever homes.</p>
+      <p class="text-xl text-slate-300">Find your perfect companion from our wonderful selection of rescue dogs looking for their forever homes in Seattle.</p>
     </div>
     
     <DogList client:only="svelte" />
-  </div>
+  </article>
 </Layout>
