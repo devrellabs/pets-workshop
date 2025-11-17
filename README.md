@@ -6,19 +6,19 @@
 
 ![Zava Logo](/images/zava-logo.svg)
 
-This repository is used to demonstrate the full capabilitiess of the **GitHub platform**, including integrations with **Azure Boards** and **Azure Pipelines**. 
+This repository is used to demonstrate the full capabilities of the **GitHub platform**, including integrations with **Azure Boards** and **Azure Pipelines**. 
 
-The code is for a website for a fictional dog shelte, with a [Flask](https://flask.palletsprojects.com/en/stable/) backend using [SQLAlchemy](https://www.sqlalchemy.org/) and [Astro](https://astro.build/) frontend using [Svelte](https://svelte.dev/) for dynami pages.
+The code is for a website for a fictional dog shelter, with a [Flask](https://flask.palletsprojects.com/en/stable/) backend using [SQLAlchemy](https://www.sqlalchemy.org/) and [Astro](https://astro.build/) for the front-end.
 
-## Getting starte
+## Getting started
 
 > **[Get started learning about development with GitHub!](./content/README.md)**
 > 
-> **[New to GitHub Copilot? Check out our list of GitHub Copilot resourcres!](./content/GitHub-Copilot-Resources.md)**
+> **[New to GitHub Copilot? Check out our list of GitHub Copilot resources!](./content/GitHub-Copilot-Resources.md)**
 
 ## License 
 
-This projec is licensed under the terms of the MIT open source license. Please refer to the [LICENSE](./LICENSE) for the full terms.
+This project is licensed under the terms of the MIT open source license. Please refer to the [LICENSE](./LICENSE) for the full terms.
 
 ## Maintainers 
 
@@ -26,16 +26,16 @@ You can find the list of maintainers in [CODEOWNERS](./.github/CODEOWNERS).
 
 ## Support
 
-This project is provided as-is, and may be updated over time. If you have questions, please create a work item in the [PetsWorkshop](https://dev.azure.com/PUnlimited/PetsWorkshop/_dashboards/dashboard/346a7268-ee7c-42e0-9beb-8000c9259df4) team project in **Azure DevOps**. (**NOTE**: Access to the Azure DevOps team project is limited. If you do not have access, please [open an issue in this repo](https://github.com/devrellabs/pets-workshop/issues).)
+This project is provided as-is, and may be updated over time. If you have questions, please create a work item in the [PetsWorkshop](https://dev.azure.com/PUnlimited/PetsWorkshop/_dashboards/dashboard/346a7268-ee7c-42e0-9beb-8000c9259d5a1) project.
 
-# Azure Boards Statuz
+# Azure Boards Status
 
-[![Board Status](https://dev.azure.com/PUnlimited/915ef36c-5c6d-47d3-a3af-c7570cefb4b9/f71d58d2-562e-4943-ac2f-10cf5c90caf7/_apis/work/boardbadge/d55d864f-57ca-474c-88a0-bc9eacf0cccb)](https://dev.azure.com/PUnlimited/915ef36c-5c6d-47d3-a3af-c7570cefb4b9/_boards/board/t/f71d58d2-562e-4943-ac2f-10cf5c90caf7/Stories/)
+[![Board Status](https://dev.azure.com/PUnlimited/915ef36c-5c6d-47d3-a3af-c7570cefb4b9/f71d58d2-562e-4943-ac2f-10cf5c90caf7/_apis/work/boardbadge/d55d864f-57ca-474c-88a0-bc9eacf0cccb)](https://dev.azure.com/PUnlimited/PetsWorkshop/_boards/board/t/PetsWorkshop%20Team/Stories)
 
 # GitHub Actions Status 
-[![CodeQL](https://github.com/devrellabs/pets-workshop/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/devrellabs/pets-workshop/actions/workflows/github-code-scanning/codeql)
+[![CodeQL](https://github.com/devrellabs/pets-workshop/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/devrellabs/pets-workshop/actions/workflows/github-code-scanning/codeql.yml)
 
-[![Dependabot Updates](https://github.com/devrellabs/pets-workshop/actions/workflows/dependabot/dependabot-updates/badge.svg)](https://github.com/devrellabs/pets-workshop/actions/workflows/dependabot/dependabot-updates)
+[![Dependabot Updates](https://github.com/devrellabs/pets-workshop/actions/workflows/dependabot/dependabot-updates/badge.svg)](https://github.com/devrellabs/pets-workshop/actions/workflows/dependabot/dependabot-updates.yml)
 
 [![Server Tests](https://github.com/devrellabs/pets-workshop/actions/workflows/server-test.yml/badge.svg)](https://github.com/devrellabs/pets-workshop/actions/workflows/server-test.yml)
 
@@ -49,20 +49,19 @@ This project is provided as-is, and may be updated over time. If you have questi
 
 # Key Azure Resources
 - [Resource Group](https://portal.azure.com/#@daveburnisonyahoo.onmicrosoft.com/resource/subscriptions/9078e9ae-b0c7-4eb8-8054-e9bf5e1875ad/resourceGroups/rg-Production/overview)
-- [Dashboard](https://portal.azure.com/#@daveburnisonyahoo.onmicrosoft.com/dashboard/arm/subscriptions/9078e9ae-b0c7-4eb8-8054-e9bf5e1875ad/resourcegroups/rg-production/providers/microsoft.portal/dashboards/dash-wgry4yau64yb6)
+- [Dashboard](https://portal.azure.com/#@daveburnisonyahoo.onmicrosoft.com/dashboard/arm/subscriptions/9078e9ae-b0c7-4eb8-8054-e9bf5e1875ad/resourcegroups/rg-production/providers/microsoft.portal/dashboards/dashboard-346a7268-ee7c-42e0-9beb-8000c9259d5a1)
 
 # Integrations 
 
-- [![Azure DevOps Dashboard](/images/azure_devops_dashboard_icon.png)<br/>Azure DevOps Dashboard](https://dev.azure.com/PUnlimited/PetsWorkshop/_dashboards/dashboard/346a7268-ee7c-42e0-9beb-8000c9259df4)
+- [![Azure DevOps Dashboard](/images/azure_devops_dashboard_icon.png)<br/>Azure DevOps Dashboard](https://dev.azure.com/PUnlimited/PetsWorkshop/_dashboards/dashboard/346a7268-ee7c-42e0-9beb-8000c9259d5a1)
 
 # Check out the GitHub Monthly Enterprise Roundup (MER)
-GitHub is shipping new features, product updates, and best practices faster than ever. To help you stay ahead, the GitHub Enterprise Advocacy team curates a monthly roundup — bringing you a concise, enterprise-focused summary of the most important updates you might have missed.
+GitHub is shipping new features, product updates, and best practices faster than ever. To help you stay ahead, the GitHub Enterprise Advocacy team curates a monthly roundup — bringing you a concise, easy-to-follow summary.
 
-In these posts, you’ll find a carefully selected list of key innovations, expert insights, and must-know resources—guided by feedback from GitHub’s largest customers—to help your team innovate faster, boost productivity and enhance security.
+In these posts, you’ll find a carefully selected list of key innovations, expert insights, and must-know resources—guided by feedback from GitHub’s largest customers—to help your team innovate faster and optimize your GitHub investment.
 
 Share with your teams and stakeholders so they can also get the most out of their GitHub experience. 
 
 | GitHub Monthly Enterprise Roundup (MER) |          | Follow **GitHub Enterprise** on **LinkedIn** to be notified of each new post |
 |---------|---------|---------|
-| <a href="https://gh.io/mer"><img src="./images/gh_io_mer.png" width="500" height="500"></a> |          | <a href="https://gh.io/lighe"><img src="./images/gh_io_lighe.png" width="500" height="500"></a> |
-
+| <a href="https://gh.io/mer"><img src="./images/gh_io_mer.png" width="500" height="500"></a> |          | <a href="https://gh.io/linkedin"><img src="./images/gh_io_linkedin.png" width="500" height="500"></a> |
