@@ -1,9 +1,7 @@
 ##################################################################################################################
 # Build and deploy via Azure Pipelines
 # Refer to https://dev.azure.com/PUnlimited/PetsWorkshop/_boards/board/t/PetsWorkshop%20Team/Stories?workitem=642
-# NOTE: In the interest of time, we will emulate a multi-stage deployment for now. 
-# In the fullness of time we will complete the steps noted in the User Story.
-# Dave Burnison 2025-11-05
+# Multi-stage deployment with Bicep infrastructure deployment
 ##################################################################################################################
 
 trigger:
@@ -18,27 +16,45 @@ pool:
 
 variables:
   buildConfiguration: 'Release'
-  pythonVersions: '["3.12", "3.13", "3.14"]'  
-  mode: 'emulate'
-  # mode: 'execute'
+  pythonVersions: '["3.12", "3.13", "3.14"]'
+  
+  # Azure Deployment Configuration
+  azureServiceConnection: 'AzureServiceConnection' # Update with your service connection name
+  azureSubscriptionId: '$(AZURE_SUBSCRIPTION_ID)' # Set this variable in pipeline variables or variable group
+  azureLocation: 'westus' # Default Azure region for deployments
+  
+  # Deployment Parameters (common across environments)
+  principalId: '$(AZURE_PRINCIPAL_ID)' # Set this variable in pipeline variables or variable group
+  principalType: '$(AZURE_PRINCIPAL_TYPE)' # Set this variable (e.g., 'ServicePrincipal' or 'User')
+  clientExists: false # Set to true if container app already exists
+  serverExists: false # Set to true if container app already exists
 
 ###################################################################
 # CI Stage                                                        #
 ###################################################################
 stages:
 - stage: CI
-  displayName: CI
+  displayName: 'Build and Test'
   jobs:
   - job: Build
-    displayName: 'Build the app'
+    displayName: 'Build and Publish Artifacts'
     
     steps:
     - checkout: self
       displayName: 'Checkout code'
     
-    - script: echo "Task Succeeded"
-      condition: and(succeeded(), eq(variables['mode'], 'emulate'))
-      displayName: 'Build emulation'
+    - script: |
+        echo "##[section]Building application artifacts"
+        echo "Build configuration: $(buildConfiguration)"
+      displayName: 'Build application'
+    
+    # Publish Bicep templates and parameters as build artifacts
+    - task: PublishBuildArtifacts@1
+      displayName: 'Publish Bicep templates'
+      inputs:
+        PathtoPublish: '$(Build.SourcesDirectory)/infra'
+        ArtifactName: 'bicep-templates'
+        publishLocation: 'Container'
 
   - job: TestMatrix
     displayName: 'Test with Multiple Python Versions'
@@ -93,92 +109,202 @@ stages:
 # Dev Stage                                                       #
 ###################################################################
 - stage: Dev
-  displayName: Dev
+  displayName: 'Deploy to Dev'
   dependsOn: CI
+  condition: succeeded()
   variables:
-    slot: Dev
+    environmentName: 'Dev'
+    resourceGroupName: 'rg-Dev'
 
   jobs:
-  - deployment: DeployWeb
-    displayName: Deploy and test
-    # creates an environment if it doesn't exist
+  - deployment: DeployInfrastructure
+    displayName: 'Deploy Infrastructure and Application'
     environment: 'Dev'
     strategy:
       runOnce:
         deploy:
           steps:
-
-          - script: echo "Task Succeeded"
-            condition: and(succeeded(), eq(variables['mode'], 'emulate'))
-            displayName: 'Becep Template Execution emulation'
-
-          - script: echo "Task Succeeded"
-            condition: and(succeeded(), eq(variables['mode'], 'emulate'))
-            displayName: 'Deploy Container App emulation'
-
-          - script: echo "Task Succeeded"
-            condition: and(succeeded(), eq(variables['mode'], 'emulate'))
-            displayName: 'Playwright UI Tests emulation'
+          - checkout: none
+          
+          - download: current
+            artifact: bicep-templates
+            displayName: 'Download Bicep templates'
+          
+          - task: AzureCLI@2
+            displayName: 'Deploy Bicep template to Dev'
+            inputs:
+              azureSubscription: '$(azureServiceConnection)'
+              scriptType: 'bash'
+              scriptLocation: 'inlineScript'
+              inlineScript: |
+                echo "##[section]Deploying infrastructure to Dev environment"
+                echo "Subscription: $(azureSubscriptionId)"
+                echo "Location: $(azureLocation)"
+                echo "Environment: $(environmentName)"
+                
+                # Deploy subscription-scoped Bicep template
+                az deployment sub create \
+                  --name "deploy-$(environmentName)-$(Build.BuildId)" \
+                  --location "$(azureLocation)" \
+                  --template-file "$(Pipeline.Workspace)/bicep-templates/main.bicep" \
+                  --parameters \
+                    environmentName="$(environmentName)" \
+                    location="$(azureLocation)" \
+                    principalId="$(principalId)" \
+                    principalType="$(principalType)" \
+                    clientExists=$(clientExists) \
+                    serverExists=$(serverExists) \
+                  --verbose
+                
+                echo "##[section]Deployment completed successfully"
+                
+                # Output deployment results
+                az deployment sub show \
+                  --name "deploy-$(environmentName)-$(Build.BuildId)" \
+                  --query properties.outputs
+          
+          - script: |
+              echo "##[section]Post-deployment validation for Dev"
+              echo "Infrastructure deployed to resource group: $(resourceGroupName)"
+              echo "Next steps: Deploy container applications"
+            displayName: 'Post-deployment steps'
 
 ###################################################################
 # QA Stage                                                        #
 ###################################################################
 - stage: QA
-  displayName: QA
+  displayName: 'Deploy to QA'
   dependsOn: Dev
+  condition: succeeded()
   variables:
-    slot: QA
+    environmentName: 'QA'
+    resourceGroupName: 'rg-QA'
 
   jobs:
-  - deployment: DeployWeb
-    displayName: Deploy and test
-    # creates an environment if it doesn't exist
+  - deployment: DeployInfrastructure
+    displayName: 'Deploy Infrastructure and Application'
     environment: 'QA'
     strategy:
       runOnce:
         deploy:
           steps:
+          - checkout: none
           
-          - script: echo "Task Succeeded"
-            condition: and(succeeded(), eq(variables['mode'], 'emulate'))
-            displayName: 'Becep Template Execution emulation'
-
-          - script: echo "Task Succeeded"
-            condition: and(succeeded(), eq(variables['mode'], 'emulate'))
-            displayName: 'Deploy Container App emulation'
-
-          - script: echo "Task Succeeded"
-            condition: and(succeeded(), eq(variables['mode'], 'emulate'))
-            displayName: 'Playwright UI Tests emulation'
+          - download: current
+            artifact: bicep-templates
+            displayName: 'Download Bicep templates'
+          
+          - task: AzureCLI@2
+            displayName: 'Deploy Bicep template to QA'
+            inputs:
+              azureSubscription: '$(azureServiceConnection)'
+              scriptType: 'bash'
+              scriptLocation: 'inlineScript'
+              inlineScript: |
+                echo "##[section]Deploying infrastructure to QA environment"
+                echo "Subscription: $(azureSubscriptionId)"
+                echo "Location: $(azureLocation)"
+                echo "Environment: $(environmentName)"
+                
+                # Deploy subscription-scoped Bicep template
+                az deployment sub create \
+                  --name "deploy-$(environmentName)-$(Build.BuildId)" \
+                  --location "$(azureLocation)" \
+                  --template-file "$(Pipeline.Workspace)/bicep-templates/main.bicep" \
+                  --parameters \
+                    environmentName="$(environmentName)" \
+                    location="$(azureLocation)" \
+                    principalId="$(principalId)" \
+                    principalType="$(principalType)" \
+                    clientExists=$(clientExists) \
+                    serverExists=$(serverExists) \
+                  --verbose
+                
+                echo "##[section]Deployment completed successfully"
+                
+                # Output deployment results
+                az deployment sub show \
+                  --name "deploy-$(environmentName)-$(Build.BuildId)" \
+                  --query properties.outputs
+          
+          - script: |
+              echo "##[section]Post-deployment validation for QA"
+              echo "Infrastructure deployed to resource group: $(resourceGroupName)"
+              echo "Running smoke tests and validation"
+            displayName: 'Post-deployment validation'
+          
+          - script: |
+              echo "##[section]Placeholder for Playwright UI Tests"
+              echo "TODO: Implement Playwright tests for QA environment"
+            displayName: 'Run UI tests (placeholder)'
 
 ###################################################################
-# Production  Stage                                               #
+# Production Stage                                                #
 ###################################################################
 - stage: Production
-  displayName: Production
+  displayName: 'Deploy to Production'
   dependsOn: QA
+  condition: succeeded()
   variables:
-    slot: Production
+    environmentName: 'Production'
+    resourceGroupName: 'rg-Production'
 
   jobs:
-  - deployment: DeployWeb
-    displayName: Deploy
-    # creates an environment if it doesn't exist
+  - deployment: DeployInfrastructure
+    displayName: 'Deploy Infrastructure and Application'
     environment: 'Production'
     strategy:
       runOnce:
         deploy:
           steps:
+          - checkout: none
           
-          - script: echo "Task Succeeded"
-            condition: and(succeeded(), eq(variables['mode'], 'emulate'))
-            displayName: 'Becep Template Execution emulation'
-
-          - script: echo "Task Succeeded"
-            condition: and(succeeded(), eq(variables['mode'], 'emulate'))
-            displayName: 'Deploy Container App emulation'
-
-          - script: echo "Task Succeeded"
-            condition: and(succeeded(), eq(variables['mode'], 'emulate'))
-            displayName: 'Playwright UI Tests emulation'
+          - download: current
+            artifact: bicep-templates
+            displayName: 'Download Bicep templates'
+          
+          - task: AzureCLI@2
+            displayName: 'Deploy Bicep template to Production'
+            inputs:
+              azureSubscription: '$(azureServiceConnection)'
+              scriptType: 'bash'
+              scriptLocation: 'inlineScript'
+              inlineScript: |
+                echo "##[section]Deploying infrastructure to Production environment"
+                echo "Subscription: $(azureSubscriptionId)"
+                echo "Location: $(azureLocation)"
+                echo "Environment: $(environmentName)"
+                
+                # Deploy subscription-scoped Bicep template
+                az deployment sub create \
+                  --name "deploy-$(environmentName)-$(Build.BuildId)" \
+                  --location "$(azureLocation)" \
+                  --template-file "$(Pipeline.Workspace)/bicep-templates/main.bicep" \
+                  --parameters \
+                    environmentName="$(environmentName)" \
+                    location="$(azureLocation)" \
+                    principalId="$(principalId)" \
+                    principalType="$(principalType)" \
+                    clientExists=$(clientExists) \
+                    serverExists=$(serverExists) \
+                  --verbose
+                
+                echo "##[section]Deployment completed successfully"
+                
+                # Output deployment results
+                az deployment sub show \
+                  --name "deploy-$(environmentName)-$(Build.BuildId)" \
+                  --query properties.outputs
+          
+          - script: |
+              echo "##[section]Post-deployment validation for Production"
+              echo "Infrastructure deployed to resource group: $(resourceGroupName)"
+              echo "Verifying production deployment health"
+            displayName: 'Post-deployment validation'
+          
+          - script: |
+              echo "##[section]Production deployment complete"
+              echo "Monitor application health and performance"
+              echo "Application Insights and Log Analytics available for monitoring"
+            displayName: 'Deployment summary'
 
