@@ -60,7 +60,7 @@ GitHub is shipping new features, product updates, and best practices faster than
 
 In these posts, you’ll find a carefully selected list of key innovations, expert insights, and must-know resources—guided by feedback from GitHub’s largest customers—to help your team innovate faster, boost productivity and enhance security.
 
-Share with your teams and stakeholders so they can also get the most out of their GitHub experience. 
+Share with your teams and stakeholders so they can also get the most out of their GitHub experience. asdasd
 
 | GitHub Monthly Enterprise Roundup (MER) |          | Follow **GitHub Enterprise** on **LinkedIn** to be notified of each new post |
 |---------|---------|---------|
