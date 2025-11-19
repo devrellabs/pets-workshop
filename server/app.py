@@ -1,4 +1,5 @@
 import os
+from datetime import datetime
 from typing import Dict, List, Any, Optional
 from flask import Flask, jsonify, Response
 from models import init_db, db, Dog, Breed
@@ -64,6 +65,21 @@ def get_dog(id: int) -> tuple[Response, int] | Response:
     }
     
     return jsonify(dog)
+
+@app.route('/api/sitemap', methods=['GET'])
+def get_sitemap_data() -> Response:
+    """
+    Returns sitemap data for all dogs in JSON format.
+    This can be used by the frontend to generate sitemap.xml
+    """
+    dogs_query = db.session.query(Dog.id).all()
+    
+    dog_ids: List[int] = [dog.id for dog in dogs_query]
+    
+    return jsonify({
+        'dog_ids': dog_ids,
+        'last_updated': datetime.now().isoformat()
+    })
 
 ## HERE
 

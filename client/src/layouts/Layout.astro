@@ -4,23 +4,72 @@ import "../styles/global.css"
 
 interface Props {
   title?: string;
+  description?: string;
+  ogImage?: string;
+  ogType?: string;
+  keywords?: string;
+  canonical?: string;
+  structuredData?: object;
 }
 
-const { title = "Tailspin Shelter" } = Astro.props;
+const { 
+  title = "Tailspin Shelter - Dog Adoption in Seattle",
+  description = "Find your perfect companion at Tailspin Shelter. Browse adoptable dogs in Seattle, WA. A Zava-supported non-profit helping dogs find their forever homes.",
+  ogImage = "/zava-logo.svg",
+  ogType = "website",
+  keywords = "dog adoption, shelter, Seattle, dogs, pets, animal rescue, adopt a dog",
+  canonical,
+  structuredData
+} = Astro.props;
+
+const canonicalURL = canonical || new URL(Astro.url.pathname, Astro.site);
+const siteUrl = Astro.site || "https://tailspinshelter.com";
 ---
 
 <!doctype html>
 <html lang="en" class="dark">
     <head>
         <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
         <meta name="generator" content={Astro.generator} />
+        
+        <!-- Primary Meta Tags -->
         <title>{title}</title>
+        <meta name="title" content={title} />
+        <meta name="description" content={description} />
+        <meta name="keywords" content={keywords} />
+        <link rel="canonical" href={canonicalURL} />
+        
+        <!-- Open Graph / Facebook -->
+        <meta property="og:type" content={ogType} />
+        <meta property="og:url" content={canonicalURL} />
+        <meta property="og:title" content={title} />
+        <meta property="og:description" content={description} />
+        <meta property="og:image" content={new URL(ogImage, siteUrl)} />
+        <meta property="og:site_name" content="Tailspin Shelter" />
+        
+        <!-- Twitter -->
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:url" content={canonicalURL} />
+        <meta name="twitter:title" content={title} />
+        <meta name="twitter:description" content={description} />
+        <meta name="twitter:image" content={new URL(ogImage, siteUrl)} />
+        
+        <!-- Additional SEO Meta Tags -->
+        <meta name="robots" content="index, follow" />
+        <meta name="author" content="Tailspin Shelter" />
+        <meta name="language" content="English" />
+        
         <!-- Preconnect to improve font loading -->
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+        
+        <!-- Structured Data -->
+        {structuredData && (
+          <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
+        )}
     </head>
     <body class="min-h-screen bg-slate-900 text-white transition-colors duration-300 m-0 w-full h-full font-sans">
         <Header />

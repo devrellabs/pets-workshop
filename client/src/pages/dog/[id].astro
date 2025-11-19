@@ -6,10 +6,57 @@ import DogDetails from '../../components/DogDetails.svelte';
 const { id } = Astro.params;
 const dogId = parseInt(id || '0');
 
+// Fetch dog data for SEO
+let dog = null;
+let dogSchema = null;
+try {
+  const apiUrl = import.meta.env.PUBLIC_API_URL || 'http://localhost:5100';
+  const response = await fetch(`${apiUrl}/api/dogs/${dogId}`);
+  if (response.ok) {
+    dog = await response.json();
+    
+    // Create structured data for the dog
+    dogSchema = {
+      "@context": "https://schema.org",
+      "@type": "Product",
+      "name": dog.name,
+      "description": dog.description || `Meet ${dog.name}, a ${dog.age} year old ${dog.breed} looking for a loving home.`,
+      "category": "Pet Adoption",
+      "brand": {
+        "@type": "Organization",
+        "name": "Tailspin Shelter"
+      },
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD",
+        "availability": dog.status === "AVAILABLE" ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+        "url": new URL(`/dog/${dogId}`, Astro.site || "https://tailspinshelter.com")
+      }
+    };
+  }
+} catch (error) {
+  console.error('Error fetching dog data for SEO:', error);
+}
+
+const pageTitle = dog ? `${dog.name} - ${dog.breed} | Tailspin Shelter` : "Dog Details - Tailspin Shelter";
+const pageDescription = dog 
+  ? `Meet ${dog.name}, a ${dog.age} year old ${dog.breed} available for adoption at Tailspin Shelter in Seattle. ${dog.description?.substring(0, 100) || 'Learn more about this wonderful dog.'}`
+  : "View dog details at Tailspin Shelter.";
+const pageKeywords = dog 
+  ? `${dog.name}, ${dog.breed}, dog adoption, ${dog.gender} dog, ${dog.age} years old, Seattle dog adoption`
+  : "dog adoption, Seattle, animal shelter";
+
 const props = { dogId };
 ---
 
-<Layout title="Dog Details - Tailspin Shelter">
+<Layout 
+  title={pageTitle}
+  description={pageDescription}
+  keywords={pageKeywords}
+  ogType="product"
+  structuredData={dogSchema}
+>
   <div class="py-8">
     <DogDetails client:load dogId={dogId} />
     

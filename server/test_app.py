@@ -90,6 +90,30 @@ class TestApp(unittest.TestCase):
         self.assertTrue(isinstance(data, list))
         self.assertEqual(len(data), 1)
         self.assertEqual(set(data[0].keys()), {'id', 'name', 'breed'})
+    
+    @patch('app.db.session.query')
+    def test_get_sitemap_data(self, mock_query):
+        """Test sitemap data endpoint"""
+        # Arrange
+        dog1 = MagicMock()
+        dog1.id = 1
+        dog2 = MagicMock()
+        dog2.id = 2
+        mock_dogs = [dog1, dog2]
+        
+        mock_query_instance = MagicMock()
+        mock_query.return_value = mock_query_instance
+        mock_query_instance.all.return_value = mock_dogs
+        
+        # Act
+        response = self.app.get('/api/sitemap')
+        
+        # Assert
+        self.assertEqual(response.status_code, 200)
+        data = json.loads(response.data)
+        self.assertIn('dog_ids', data)
+        self.assertIn('last_updated', data)
+        self.assertEqual(data['dog_ids'], [1, 2])
 
 
 if __name__ == '__main__':

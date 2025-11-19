@@ -2,15 +2,45 @@
 import Layout from '../layouts/Layout.astro';
 import DogList from '../components/DogList.svelte';
 import "../styles/global.css";
+
+// SEO structured data for Organization
+const organizationSchema = {
+  "@context": "https://schema.org",
+  "@type": "AnimalShelter",
+  "name": "Tailspin Shelter",
+  "description": "A non-profit dog shelter in Seattle helping dogs find their forever homes. Supported by Zava.",
+  "url": Astro.site || "https://tailspinshelter.com",
+  "logo": new URL("/zava-logo.svg", Astro.site || "https://tailspinshelter.com"),
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "Seattle",
+    "addressRegion": "WA",
+    "addressCountry": "US"
+  },
+  "founder": {
+    "@type": "Person",
+    "name": "Kayo Miwa"
+  },
+  "foundingDate": "2015",
+  "sameAs": [
+    "https://github.com/social-impact"
+  ]
+};
 ---
 
-<Layout title="Tailspin Shelter - Find Your Forever Friend">
+<Layout 
+  title="Tailspin Shelter - Adopt a Dog in Seattle | Find Your Forever Friend"
+  description="Browse adoptable dogs at Tailspin Shelter in Seattle. Find your perfect companion from our wonderful selection of dogs looking for loving homes. A Zava-supported non-profit."
+  keywords="dog adoption Seattle, adopt a dog, Seattle dog shelter, rescue dogs, animal shelter Seattle, adopt a pet, dogs for adoption"
+  ogType="website"
+  structuredData={organizationSchema}
+>
   <div class="py-8">
     <div class="max-w-3xl mb-10">
       <h1 class="text-4xl font-bold mb-4 text-slate-100">Welcome to Tailspin Shelter</h1>
       <div class="flex items-center gap-3 mb-4">
         <p class="text-lg text-blue-400 italic">A Zava supported non-profit organization</p>
-        <img src="/zava-logo.svg" alt="Zava logo" class="h-8" />
+        <img src="/zava-logo.svg" alt="Zava - Tailspin Shelter's supporting organization logo" class="h-8" />
       </div>
       <p class="text-xl text-slate-300">Find your perfect companion from our wonderful selection of dogs looking for their forever homes.</p>
     </div>

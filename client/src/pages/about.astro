@@ -1,10 +1,42 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import "../styles/global.css";
-// about page
+
+// Structured data for About page
+const aboutPageSchema = {
+  "@context": "https://schema.org",
+  "@type": "AboutPage",
+  "mainEntity": {
+    "@type": "AnimalShelter",
+    "name": "Tailspin Shelter",
+    "description": "Nestled in the heart of Seattle, Tailspin Shelter is a warm, welcoming haven for dogs of all breeds and backgrounds. Founded in 2015 by Kayo Miwa.",
+    "foundingDate": "2015",
+    "founder": {
+      "@type": "Person",
+      "name": "Kayo Miwa",
+      "jobTitle": "Chief Executive Officer",
+      "worksFor": {
+        "@type": "Organization",
+        "name": "Zava"
+      }
+    },
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Seattle",
+      "addressRegion": "WA",
+      "addressCountry": "US"
+    }
+  }
+};
 ---
 
-<Layout title="About - Tailspin Shelter">
+<Layout 
+  title="About Tailspin Shelter - Our Mission & Story | Seattle Dog Rescue"
+  description="Learn about Tailspin Shelter, a Seattle dog rescue founded in 2015 by Kayo Miwa. Supported by Zava, we help dogs find loving forever homes through adoption."
+  keywords="about Tailspin Shelter, Seattle dog rescue, Kayo Miwa, Zava, dog shelter mission, animal rescue Seattle"
+  ogType="website"
+  structuredData={aboutPageSchema}
+>
   <section class="max-w-5xl mx-auto px-4 py-8">
     <div class="bg-slate-800/70 backdrop-blur-sm border border-slate-700 rounded-xl shadow-lg p-8 transition-colors duration-300">
       <h2 class="text-blue-400 text-4xl mb-8 pb-3 border-b border-slate-600 font-bold">About Tailspin Shelter</h2>
