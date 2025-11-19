@@ -31,8 +31,8 @@ test.describe('Breed Filter Component', () => {
     // Open dropdown
     await page.getByRole('button', { name: 'Toggle breed filter dropdown' }).click();
     
-    // Get all options
-    const options = await page.getByRole('option').allTextContents();
+    // Get all options and trim whitespace
+    const options = (await page.getByRole('option').allTextContents()).map(o => o.trim());
     
     // Check that breeds are in alphabetical order (first few)
     expect(options[0]).toBe('American Staffordshire Terrier');
