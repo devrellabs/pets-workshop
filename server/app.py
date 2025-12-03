@@ -1,5 +1,5 @@
 import os
-from datetime import datetime
+from datetime import datetime, UTC
 from typing import Dict, List, Any, Optional
 from flask import Flask, jsonify, Response
 from models import init_db, db, Dog, Breed
@@ -92,7 +92,7 @@ def get_sitemap_data() -> Response:
     
     return jsonify({
         'dog_ids': dog_ids,
-        'last_updated': datetime.now().isoformat()
+        'last_updated': datetime.now(UTC).isoformat()
     })
 
 if __name__ == '__main__':
