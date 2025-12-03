@@ -115,6 +115,81 @@ class TestApp(unittest.TestCase):
         self.assertIn('last_updated', data)
         self.assertEqual(data['dog_ids'], [1, 2])
 
+    @patch('app.db.session.query')
+    def test_get_breeds_success(self, mock_query):
+        """Test successful retrieval of breeds"""
+        # Arrange
+        mock_breed1 = MagicMock()
+        mock_breed1.name = "Labrador Retriever"
+        mock_breed2 = MagicMock()
+        mock_breed2.name = "German Shepherd"
+        mock_breed3 = MagicMock()
+        mock_breed3.name = "Beagle"
+        
+        mock_query_instance = MagicMock()
+        mock_query.return_value = mock_query_instance
+        mock_query_instance.order_by.return_value = mock_query_instance
+        mock_query_instance.all.return_value = [mock_breed1, mock_breed2, mock_breed3]
+        
+        # Act
+        response = self.app.get('/api/breeds')
+        
+        # Assert
+        self.assertEqual(response.status_code, 200)
+        data = json.loads(response.data)
+        self.assertEqual(len(data), 5)  # 3 breeds + 2 edge cases
+        self.assertIn("Labrador Retriever", data)
+        self.assertIn("German Shepherd", data)
+        self.assertIn("Beagle", data)
+        self.assertIn("Mixed Breed", data)
+        self.assertIn("Unknown", data)
+
+    @patch('app.db.session.query')
+    def test_get_breeds_alphabetical(self, mock_query):
+        """Test that breeds are returned in alphabetical order"""
+        # Arrange
+        mock_breed1 = MagicMock()
+        mock_breed1.name = "Beagle"
+        mock_breed2 = MagicMock()
+        mock_breed2.name = "Labrador Retriever"
+        
+        mock_query_instance = MagicMock()
+        mock_query.return_value = mock_query_instance
+        mock_query_instance.order_by.return_value = mock_query_instance
+        mock_query_instance.all.return_value = [mock_breed1, mock_breed2]
+        
+        # Act
+        response = self.app.get('/api/breeds')
+        
+        # Assert
+        self.assertEqual(response.status_code, 200)
+        data = json.loads(response.data)
+        # First two should be from database (in alphabetical order from query)
+        self.assertEqual(data[0], "Beagle")
+        self.assertEqual(data[1], "Labrador Retriever")
+        # Edge cases at the end
+        self.assertEqual(data[2], "Mixed Breed")
+        self.assertEqual(data[3], "Unknown")
+
+    @patch('app.db.session.query')
+    def test_get_breeds_empty(self, mock_query):
+        """Test retrieval when no breeds are in database"""
+        # Arrange
+        mock_query_instance = MagicMock()
+        mock_query.return_value = mock_query_instance
+        mock_query_instance.order_by.return_value = mock_query_instance
+        mock_query_instance.all.return_value = []
+        
+        # Act
+        response = self.app.get('/api/breeds')
+        
+        # Assert
+        self.assertEqual(response.status_code, 200)
+        data = json.loads(response.data)
+        self.assertEqual(len(data), 2)  # Only edge cases
+        self.assertIn("Mixed Breed", data)
+        self.assertIn("Unknown", data)
+
 
 if __name__ == '__main__':
     unittest.main()
