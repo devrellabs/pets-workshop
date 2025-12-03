@@ -80,5 +80,20 @@ def get_breeds() -> Response:
     
     return jsonify(breeds_list)
 
+@app.route('/api/sitemap', methods=['GET'])
+def get_sitemap_data() -> Response:
+    """
+    Returns sitemap data for all dogs in JSON format.
+    This can be used by the frontend to generate sitemap.xml
+    """
+    dogs_query = db.session.query(Dog.id).all()
+    
+    dog_ids: List[int] = [dog.id for dog in dogs_query]
+    
+    return jsonify({
+        'dog_ids': dog_ids,
+        'last_updated': datetime.now().isoformat()
+    })
+
 if __name__ == '__main__':
     app.run(debug=True, port=5100) # Port 5100 to avoid macOS conflicts
