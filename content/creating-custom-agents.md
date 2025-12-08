@@ -313,7 +313,7 @@ See [GitHub Copilot Extensions documentation](https://docs.github.com/en/copilot
 
 ### Blog Posts and Announcements
 
-- [Custom Agents for GitHub Copilot Changelog](https://github.blog/changelog/2025-10-28-custom-agents-for-github-copilot/)
+- [GitHub Copilot Changelog](https://github.blog/changelog/label/copilot/) - Latest updates and features for GitHub Copilot
 - [Your Stack, Your Rules: Introducing Custom Agents](https://github.blog/news-insights/product-news/your-stack-your-rules-introducing-custom-agents-in-github-copilot-for-observability-iac-and-security/)
 
 ### Community Resources
