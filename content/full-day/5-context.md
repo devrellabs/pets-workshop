@@ -99,6 +99,9 @@ Whenever you make a call to Copilot chat, the response will always include the c
 
 Congratulations! You've explored context in GitHub Copilot, which is key to generating quality suggestions. You saw how you can use chat participants to help guide GitHub Copilot, and create a Copilot instructions file to provide an overview of what you're building and how you're building it. With this in place, it's time to turn our attention to [adding new functionality to our website][walkthrough-next]!
 
+> [!TIP]
+> Want to take your Copilot customization even further? Check out our guide on [creating custom agents][custom-agents-guide] to learn how to build specialized AI teammates for specific tasks like documentation, testing, or security reviews.
+
 ## Resources
 
 - [Getting started with GitHub Copilot][copilot-getting-started]
@@ -106,6 +109,7 @@ Congratulations! You've explored context in GitHub Copilot, which is key to gene
 - [Adding personal custom instructions for GitHub Copilot][copilot-personal-instructions]
 - [Copilot Chat cookbook][copilot-chat-cookbook]
 - [Use Copilot Chat in VS Code][vscode-copilot-chat]
+- [Creating custom agents for GitHub Copilot][custom-agents-guide]
 
 | [← Implement testing][walkthrough-previous] | [Next: Coding with GitHub Copilot →][walkthrough-next] |
 |:-----------------------------------|------------------------------------------:|
@@ -122,6 +126,7 @@ Congratulations! You've explored context in GitHub Copilot, which is key to gene
 [copilot-vs]: https://marketplace.visualstudio.com/items?itemName=GitHub.copilotvs
 [copilot-vscode]: https://marketplace.visualstudio.com/items?itemName=GitHub.copilot
 [copilot-xcode]: https://github.com/github/CopilotForXcode
+[custom-agents-guide]: ../creating-custom-agents.md
 [devcontainer-docs]: https://docs.github.com/en/codespaces/setting-up-your-project-for-codespaces/adding-a-dev-container-configuration/introduction-to-dev-containersopilot/adding-personal-custom-instructions-for-github-copilot
 [vscode-copilot-chat]: https://code.visualstudio.com/docs/copilot/copilot-chat
 [walkthrough-codespaces]: ./3-codespaces.mdvisualstudio.com/docs/copilot/copilot-chat

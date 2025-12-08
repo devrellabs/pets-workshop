@@ -10,6 +10,12 @@ New to GitHub Copilot? Start here!
 - [How AI can make you an awesome developer](https://github.com/orgs/community/discussions/153056) - Staying relevant in this era of AI requires not only adapting to new technologies, but also honing in on your skills. It is extremely relevant to address the elephant in the room, how AI is not going to replace us, but make us much better developers. Let’s explore five key strategies to help you stay relevant and thrive in this new era of AI-driven development.
 - [Essential GitHub Copilot resources for enterprise teams](https://resources.github.com/enterprise/essential-copilot-resources/) - GitHub Resources - We've gathered everything enterprise teams need to hit the ground running with GitHub Copilot. From initial setup to advanced features, this guide will walk you through the essential resources to make your Copilot implementation successful.
 
+## Customization
+
+Make GitHub Copilot work for your team:
+
+- **[Getting Started with Custom Agents](./creating-custom-agents.md)** - Learn how to create custom agents for GitHub Copilot that act as specialized AI teammates. This comprehensive guide covers everything from basic agent creation to advanced patterns, with practical examples you can use right away.
+
 ## Documentation
 
 [GitHub Copilot Documentation](https://docs.github.com/en/copilot) contains a robust collection of articles to help you get the most out of the tool. Some key articles to start with include:
