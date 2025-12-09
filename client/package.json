@@ -19,7 +19,7 @@
     "@tailwindcss/vite": "^4.0.13",
     "astro": "^5.4.3",
     "svelte": "^5.23.0",
-    "typescript": "^5.8.2"
+    "typescript": "^5.9.3"
   },
   "devDependencies": {
     "@playwright/test": "^1.49.1",
