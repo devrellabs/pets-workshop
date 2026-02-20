@@ -105,29 +105,11 @@ stages:
       runOnce:
         deploy:
           steps:
-          - checkout: self
-            displayName: 'Checkout code'
-
-          - task: AzureCLI@2
-            displayName: 'Deploy Bicep template'
-            inputs:
-              azureSubscription: $(azureServiceConnection)
-              scriptType: 'bash'
-              scriptLocation: 'inlineScript'
-              addSpnToEnvironment: true
-              inlineScript: |
-                objectId=$(az ad sp show --id $servicePrincipalId --query id -o tsv)
-                az deployment sub create \
-                  --location $(location) \
-                  --template-file $(System.DefaultWorkingDirectory)/infra/main.bicep \
-                  --name $(environmentName)-deployment \
-                  --parameters \
-                    environmentName=$(environmentName) \
-                    location=$(location) \
-                    principalId=$objectId \
-                    principalType=ServicePrincipal \
-                    clientExists=false \
-                    serverExists=false
+          - template: templates/deploy-bicep.yml
+            parameters:
+              environmentName: Dev
+              azureServiceConnection: $(azureServiceConnection)
+              location: $(location)
 
 ###################################################################
 # QA Stage                                                        #
@@ -148,29 +130,11 @@ stages:
       runOnce:
         deploy:
           steps:
-          - checkout: self
-            displayName: 'Checkout code'
-
-          - task: AzureCLI@2
-            displayName: 'Deploy Bicep template'
-            inputs:
-              azureSubscription: $(azureServiceConnection)
-              scriptType: 'bash'
-              scriptLocation: 'inlineScript'
-              addSpnToEnvironment: true
-              inlineScript: |
-                objectId=$(az ad sp show --id $servicePrincipalId --query id -o tsv)
-                az deployment sub create \
-                  --location $(location) \
-                  --template-file $(System.DefaultWorkingDirectory)/infra/main.bicep \
-                  --name $(environmentName)-deployment \
-                  --parameters \
-                    environmentName=$(environmentName) \
-                    location=$(location) \
-                    principalId=$objectId \
-                    principalType=ServicePrincipal \
-                    clientExists=false \
-                    serverExists=false
+          - template: templates/deploy-bicep.yml
+            parameters:
+              environmentName: QA
+              azureServiceConnection: $(azureServiceConnection)
+              location: $(location)
 
 ###################################################################
 # Production  Stage                                               #
@@ -191,27 +155,9 @@ stages:
       runOnce:
         deploy:
           steps:
-          - checkout: self
-            displayName: 'Checkout code'
-
-          - task: AzureCLI@2
-            displayName: 'Deploy Bicep template'
-            inputs:
-              azureSubscription: $(azureServiceConnection)
-              scriptType: 'bash'
-              scriptLocation: 'inlineScript'
-              addSpnToEnvironment: true
-              inlineScript: |
-                objectId=$(az ad sp show --id $servicePrincipalId --query id -o tsv)
-                az deployment sub create \
-                  --location $(location) \
-                  --template-file $(System.DefaultWorkingDirectory)/infra/main.bicep \
-                  --name $(environmentName)-deployment \
-                  --parameters \
-                    environmentName=$(environmentName) \
-                    location=$(location) \
-                    principalId=$objectId \
-                    principalType=ServicePrincipal \
-                    clientExists=false \
-                    serverExists=false
+          - template: templates/deploy-bicep.yml
+            parameters:
+              environmentName: Production
+              azureServiceConnection: $(azureServiceConnection)
+              location: $(location)
 

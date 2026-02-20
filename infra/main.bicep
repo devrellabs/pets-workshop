@@ -30,7 +30,7 @@ var tags = {
 
 // Organize resources in a resource group
 resource rg 'Microsoft.Resources/resourceGroups@2021-04-01' = {
-  name: environmentName
+  name: 'Tailspin-Shelter-${environmentName}'
   location: location
   tags: tags
 }
