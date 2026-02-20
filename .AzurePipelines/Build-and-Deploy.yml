@@ -1,8 +1,7 @@
 ##################################################################################################################
 # Build and deploy via Azure Pipelines
 # Refer to https://dev.azure.com/PUnlimited/PetsWorkshop/_boards/board/t/PetsWorkshop%20Team/Stories?workitem=642
-# NOTE: In the interest of time, we will emulate a multi-stage deployment for now. 
-# In the fullness of time we will complete the steps noted in the User Story.
+# Deploys the app to Dev, QA and Production resource groups using Bicep templates in the infra folder.
 # Dave Burnison 2025-11-05
 ##################################################################################################################
 
@@ -17,10 +16,9 @@ pool:
   vmImage: 'ubuntu-latest'
 
 variables:
-  buildConfiguration: 'Release'
   pythonVersions: '["3.12", "3.13", "3.14"]'  
-  mode: 'emulate'
-  # mode: 'execute'
+  azureServiceConnection: 'azure-service-connection'
+  location: 'eastus'
 
 ###################################################################
 # CI Stage                                                        #
@@ -37,8 +35,7 @@ stages:
       displayName: 'Checkout code'
     
     - script: echo "Task Succeeded"
-      condition: and(succeeded(), eq(variables['mode'], 'emulate'))
-      displayName: 'Build emulation'
+      displayName: 'Build step'
 
   - job: TestMatrix
     displayName: 'Test with Multiple Python Versions'
@@ -108,17 +105,27 @@ stages:
         deploy:
           steps:
 
-          - script: echo "Task Succeeded"
-            condition: and(succeeded(), eq(variables['mode'], 'emulate'))
-            displayName: 'Becep Template Execution emulation'
+          - checkout: self
+            displayName: 'Checkout code'
 
-          - script: echo "Task Succeeded"
-            condition: and(succeeded(), eq(variables['mode'], 'emulate'))
-            displayName: 'Deploy Container App emulation'
-
-          - script: echo "Task Succeeded"
-            condition: and(succeeded(), eq(variables['mode'], 'emulate'))
-            displayName: 'Playwright UI Tests emulation'
+          - task: AzureCLI@2
+            displayName: 'Deploy Bicep template to $(slot) resource group'
+            inputs:
+              azureSubscription: $(azureServiceConnection)
+              scriptType: bash
+              scriptLocation: inlineScript
+              addSpnToEnvironment: true
+              inlineScript: |
+                az deployment sub create \
+                  --name "deploy-$(slot)-$(Build.BuildId)" \
+                  --location "$(location)" \
+                  --template-file "$(Build.SourcesDirectory)/infra/main.bicep" \
+                  --parameters environmentName="$(slot)" \
+                               location="$(location)" \
+                               principalId="$servicePrincipalId" \
+                               principalType="ServicePrincipal" \
+                               clientExists=false \
+                               serverExists=false
 
 ###################################################################
 # QA Stage                                                        #
@@ -139,17 +146,27 @@ stages:
         deploy:
           steps:
           
-          - script: echo "Task Succeeded"
-            condition: and(succeeded(), eq(variables['mode'], 'emulate'))
-            displayName: 'Becep Template Execution emulation'
+          - checkout: self
+            displayName: 'Checkout code'
 
-          - script: echo "Task Succeeded"
-            condition: and(succeeded(), eq(variables['mode'], 'emulate'))
-            displayName: 'Deploy Container App emulation'
-
-          - script: echo "Task Succeeded"
-            condition: and(succeeded(), eq(variables['mode'], 'emulate'))
-            displayName: 'Playwright UI Tests emulation'
+          - task: AzureCLI@2
+            displayName: 'Deploy Bicep template to $(slot) resource group'
+            inputs:
+              azureSubscription: $(azureServiceConnection)
+              scriptType: bash
+              scriptLocation: inlineScript
+              addSpnToEnvironment: true
+              inlineScript: |
+                az deployment sub create \
+                  --name "deploy-$(slot)-$(Build.BuildId)" \
+                  --location "$(location)" \
+                  --template-file "$(Build.SourcesDirectory)/infra/main.bicep" \
+                  --parameters environmentName="$(slot)" \
+                               location="$(location)" \
+                               principalId="$servicePrincipalId" \
+                               principalType="ServicePrincipal" \
+                               clientExists=false \
+                               serverExists=false
 
 ###################################################################
 # Production  Stage                                               #
@@ -170,15 +187,25 @@ stages:
         deploy:
           steps:
           
-          - script: echo "Task Succeeded"
-            condition: and(succeeded(), eq(variables['mode'], 'emulate'))
-            displayName: 'Becep Template Execution emulation'
+          - checkout: self
+            displayName: 'Checkout code'
 
-          - script: echo "Task Succeeded"
-            condition: and(succeeded(), eq(variables['mode'], 'emulate'))
-            displayName: 'Deploy Container App emulation'
-
-          - script: echo "Task Succeeded"
-            condition: and(succeeded(), eq(variables['mode'], 'emulate'))
-            displayName: 'Playwright UI Tests emulation'
+          - task: AzureCLI@2
+            displayName: 'Deploy Bicep template to $(slot) resource group'
+            inputs:
+              azureSubscription: $(azureServiceConnection)
+              scriptType: bash
+              scriptLocation: inlineScript
+              addSpnToEnvironment: true
+              inlineScript: |
+                az deployment sub create \
+                  --name "deploy-$(slot)-$(Build.BuildId)" \
+                  --location "$(location)" \
+                  --template-file "$(Build.SourcesDirectory)/infra/main.bicep" \
+                  --parameters environmentName="$(slot)" \
+                               location="$(location)" \
+                               principalId="$servicePrincipalId" \
+                               principalType="ServicePrincipal" \
+                               clientExists=false \
+                               serverExists=false
 
