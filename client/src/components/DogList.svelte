@@ -1,6 +1,5 @@
 <script lang="ts">
     import { onMount } from "svelte";
-    import BreedFilter from "./BreedFilter.svelte";
 
     interface Dog {
         id: number;
@@ -8,19 +7,16 @@
         breed: string;
     }
 
-    let allDogs: Dog[] = $state([]);
-    let dogs: Dog[] = $state([]);
-    let loading = $state(true);
-    let error: string | null = $state(null);
-    let selectedBreeds: string[] = $state([]);
+    export let dogs: Dog[] = [];
+    let loading = true;
+    let error: string | null = null;
 
     const fetchDogs = async () => {
         loading = true;
         try {
             const response = await fetch('/api/dogs');
             if(response.ok) {
-                allDogs = await response.json();
-                dogs = allDogs;
+                dogs = await response.json();
             } else {
                 error = `Failed to fetch data: ${response.status} ${response.statusText}`;
             }
@@ -31,29 +27,13 @@
         }
     };
 
-    const handleBreedSelectionChange = (breeds: string[]) => {
-        selectedBreeds = breeds;
-        filterDogs();
-    };
-
-    const filterDogs = () => {
-        if (selectedBreeds.length === 0) {
-            dogs = allDogs;
-        } else {
-            dogs = allDogs.filter(dog => selectedBreeds.includes(dog.breed));
-        }
-    };
-
     onMount(() => {
         fetchDogs();
     });
 </script>
 
 <div>
-    <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between mb-6 gap-4">
-        <h2 class="text-2xl font-medium text-slate-100">Available Dogs</h2>
-        <BreedFilter bind:selectedBreeds onSelectionChange={handleBreedSelectionChange} />
-    </div>
+    <h2 class="text-2xl font-medium mb-6 text-slate-100">Available Dogs</h2>
     
     {#if loading}
         <!-- loading animation -->
