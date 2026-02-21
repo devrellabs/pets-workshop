@@ -91,6 +91,75 @@ class TestApp(unittest.TestCase):
         self.assertEqual(len(data), 1)
         self.assertEqual(set(data[0].keys()), {'id', 'name', 'breed'})
 
+    def _create_mock_breed(self, breed_id, name):
+        """Helper method to create a mock breed"""
+        breed = MagicMock()
+        breed.id = breed_id
+        breed.name = name
+        return breed
+
+    @patch('app.Breed')
+    def test_get_breeds_success(self, mock_breed_class):
+        """Test successful retrieval of breeds"""
+        # Arrange
+        breed1 = self._create_mock_breed(1, "Australian Shepherd")
+        breed2 = self._create_mock_breed(2, "Beagle")
+        breed3 = self._create_mock_breed(3, "Golden Retriever")
+        
+        mock_query = MagicMock()
+        mock_query.order_by.return_value.all.return_value = [breed1, breed2, breed3]
+        mock_breed_class.query = mock_query
+        
+        # Act
+        response = self.app.get('/api/breeds')
+        
+        # Assert
+        self.assertEqual(response.status_code, 200)
+        data = json.loads(response.data)
+        self.assertEqual(len(data), 3)
+        
+        # Verify breeds
+        self.assertEqual(data[0]['id'], 1)
+        self.assertEqual(data[0]['name'], "Australian Shepherd")
+        self.assertEqual(data[1]['id'], 2)
+        self.assertEqual(data[1]['name'], "Beagle")
+        self.assertEqual(data[2]['id'], 3)
+        self.assertEqual(data[2]['name'], "Golden Retriever")
+
+    @patch('app.Breed')
+    def test_get_breeds_empty(self, mock_breed_class):
+        """Test retrieval when no breeds are available"""
+        # Arrange
+        mock_query = MagicMock()
+        mock_query.order_by.return_value.all.return_value = []
+        mock_breed_class.query = mock_query
+        
+        # Act
+        response = self.app.get('/api/breeds')
+        
+        # Assert
+        self.assertEqual(response.status_code, 200)
+        data = json.loads(response.data)
+        self.assertEqual(data, [])
+
+    @patch('app.Breed')
+    def test_get_breeds_structure(self, mock_breed_class):
+        """Test the response structure for breeds"""
+        # Arrange
+        breed = self._create_mock_breed(1, "Labrador Retriever")
+        mock_query = MagicMock()
+        mock_query.order_by.return_value.all.return_value = [breed]
+        mock_breed_class.query = mock_query
+        
+        # Act
+        response = self.app.get('/api/breeds')
+        
+        # Assert
+        data = json.loads(response.data)
+        self.assertTrue(isinstance(data, list))
+        self.assertEqual(len(data), 1)
+        self.assertEqual(set(data[0].keys()), {'id', 'name'})
+
 
 if __name__ == '__main__':
     unittest.main()

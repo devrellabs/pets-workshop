@@ -8,6 +8,9 @@
     }
 
     export let dogs: Dog[] = [];
+    export let selectedBreeds: string[] = [];
+    
+    let allDogs: Dog[] = [];
     let loading = true;
     let error: string | null = null;
 
@@ -16,7 +19,7 @@
         try {
             const response = await fetch('/api/dogs');
             if(response.ok) {
-                dogs = await response.json();
+                allDogs = await response.json();
             } else {
                 error = `Failed to fetch data: ${response.status} ${response.statusText}`;
             }
@@ -26,6 +29,11 @@
             loading = false;
         }
     };
+
+    // Filter dogs based on selected breeds
+    $: dogs = selectedBreeds.length === 0 
+        ? allDogs 
+        : allDogs.filter(dog => selectedBreeds.includes(dog.breed));
 
     onMount(() => {
         fetchDogs();
