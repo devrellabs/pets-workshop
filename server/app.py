@@ -65,19 +65,7 @@ def get_dog(id: int) -> tuple[Response, int] | Response:
     
     return jsonify(dog)
 
-@app.route('/api/breeds', methods=['GET'])
-def get_breeds() -> Response:
-    # Query all breeds and sort by name
-    breeds_query = db.session.query(Breed.name).order_by(Breed.name).all()
-    
-    # Convert to list of breed names
-    breeds_list: List[str] = [breed.name for breed in breeds_query]
-    
-    # Add edge case options
-    edge_cases: List[str] = ["Mixed Breed", "Unknown"]
-    breeds_list.extend(edge_cases)
-    
-    return jsonify(breeds_list)
+## HERE
 
 if __name__ == '__main__':
     app.run(debug=True, port=5100) # Port 5100 to avoid macOS conflicts
