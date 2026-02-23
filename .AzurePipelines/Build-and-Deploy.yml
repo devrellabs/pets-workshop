@@ -1,8 +1,6 @@
 ##################################################################################################################
 # Build and deploy via Azure Pipelines
 # Refer to https://dev.azure.com/PUnlimited/PetsWorkshop/_boards/board/t/PetsWorkshop%20Team/Stories?workitem=642
-# NOTE: In the interest of time, we will emulate a multi-stage deployment for now. 
-# In the fullness of time we will complete the steps noted in the User Story.
 # Dave Burnison 2025-11-05
 ##################################################################################################################
 
@@ -18,9 +16,9 @@ pool:
 
 variables:
   buildConfiguration: 'Release'
-  pythonVersions: '["3.12", "3.13", "3.14"]'  
-  mode: 'emulate'
-  # mode: 'execute'
+  pythonVersions: '["3.12", "3.13", "3.14"]'
+  azureServiceConnection: 'Pets Workshop'
+  location: 'eastus'
 
 ###################################################################
 # CI Stage                                                        #
@@ -37,8 +35,7 @@ stages:
       displayName: 'Checkout code'
     
     - script: echo "Task Succeeded"
-      condition: and(succeeded(), eq(variables['mode'], 'emulate'))
-      displayName: 'Build emulation'
+      displayName: 'Build'
 
   - job: TestMatrix
     displayName: 'Test with Multiple Python Versions'
@@ -97,6 +94,7 @@ stages:
   dependsOn: CI
   variables:
     slot: Dev
+    environmentName: Dev
 
   jobs:
   - deployment: DeployWeb
@@ -107,18 +105,11 @@ stages:
       runOnce:
         deploy:
           steps:
-
-          - script: echo "Task Succeeded"
-            condition: and(succeeded(), eq(variables['mode'], 'emulate'))
-            displayName: 'Becep Template Execution emulation'
-
-          - script: echo "Task Succeeded"
-            condition: and(succeeded(), eq(variables['mode'], 'emulate'))
-            displayName: 'Deploy Container App emulation'
-
-          - script: echo "Task Succeeded"
-            condition: and(succeeded(), eq(variables['mode'], 'emulate'))
-            displayName: 'Playwright UI Tests emulation'
+          - template: templates/deploy-bicep.yml
+            parameters:
+              environmentName: Dev
+              azureServiceConnection: $(azureServiceConnection)
+              location: $(location)
 
 ###################################################################
 # QA Stage                                                        #
@@ -128,6 +119,7 @@ stages:
   dependsOn: Dev
   variables:
     slot: QA
+    environmentName: QA
 
   jobs:
   - deployment: DeployWeb
@@ -138,18 +130,11 @@ stages:
       runOnce:
         deploy:
           steps:
-          
-          - script: echo "Task Succeeded"
-            condition: and(succeeded(), eq(variables['mode'], 'emulate'))
-            displayName: 'Becep Template Execution emulation'
-
-          - script: echo "Task Succeeded"
-            condition: and(succeeded(), eq(variables['mode'], 'emulate'))
-            displayName: 'Deploy Container App emulation'
-
-          - script: echo "Task Succeeded"
-            condition: and(succeeded(), eq(variables['mode'], 'emulate'))
-            displayName: 'Playwright UI Tests emulation'
+          - template: templates/deploy-bicep.yml
+            parameters:
+              environmentName: QA
+              azureServiceConnection: $(azureServiceConnection)
+              location: $(location)
 
 ###################################################################
 # Production  Stage                                               #
@@ -159,6 +144,7 @@ stages:
   dependsOn: QA
   variables:
     slot: Production
+    environmentName: Production
 
   jobs:
   - deployment: DeployWeb
@@ -169,16 +155,9 @@ stages:
       runOnce:
         deploy:
           steps:
-          
-          - script: echo "Task Succeeded"
-            condition: and(succeeded(), eq(variables['mode'], 'emulate'))
-            displayName: 'Becep Template Execution emulation'
-
-          - script: echo "Task Succeeded"
-            condition: and(succeeded(), eq(variables['mode'], 'emulate'))
-            displayName: 'Deploy Container App emulation'
-
-          - script: echo "Task Succeeded"
-            condition: and(succeeded(), eq(variables['mode'], 'emulate'))
-            displayName: 'Playwright UI Tests emulation'
+          - template: templates/deploy-bicep.yml
+            parameters:
+              environmentName: Production
+              azureServiceConnection: $(azureServiceConnection)
+              location: $(location)
 
