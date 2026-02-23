@@ -65,6 +65,12 @@ def get_dog(id: int) -> tuple[Response, int] | Response:
     
     return jsonify(dog)
 
+@app.route('/api/breeds', methods=['GET'])
+def get_breeds() -> Response:
+    breeds_query = db.session.query(Breed.name).order_by(Breed.name).all()
+    breeds_list: List[str] = [breed.name for breed in breeds_query]
+    return jsonify(breeds_list)
+
 ## HERE
 
 if __name__ == '__main__':

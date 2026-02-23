@@ -8,8 +8,13 @@
     }
 
     export let dogs: Dog[] = [];
+    export let selectedBreeds: string[] = [];
     let loading = true;
     let error: string | null = null;
+
+    $: filteredDogs = selectedBreeds.length > 0
+        ? dogs.filter((dog) => selectedBreeds.includes(dog.breed))
+        : dogs;
 
     const fetchDogs = async () => {
         loading = true;
@@ -60,10 +65,15 @@
         <div class="text-center py-12 bg-slate-800/50 backdrop-blur-sm rounded-xl border border-slate-700">
             <p class="text-slate-300">No dogs available at the moment.</p>
         </div>
+    {:else if filteredDogs.length === 0}
+        <!-- no dogs match the filter -->
+        <div class="text-center py-12 bg-slate-800/50 backdrop-blur-sm rounded-xl border border-slate-700">
+            <p class="text-slate-300">No dogs match the selected breed filters.</p>
+        </div>
     {:else}
         <!-- dog list -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {#each dogs as dog (dog.id)}
+            {#each filteredDogs as dog (dog.id)}
                 <a 
                     href={`/dog/${dog.id}`} 
                     class="group block bg-slate-800/60 backdrop-blur-sm rounded-xl overflow-hidden shadow-lg border border-slate-700/50 hover:border-blue-500/50 hover:shadow-blue-500/10 hover:shadow-xl transition-all duration-300 hover:translate-y-[-6px]"
