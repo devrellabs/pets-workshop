@@ -1,5 +1,6 @@
 <script lang="ts">
     import { onMount } from "svelte";
+    import BreedFilter from "./BreedFilter.svelte";
 
     interface Dog {
         id: number;
@@ -10,6 +11,11 @@
     export let dogs: Dog[] = [];
     let loading = true;
     let error: string | null = null;
+    let selectedBreeds: string[] = [];
+
+    $: filteredDogs = selectedBreeds.length === 0
+        ? dogs
+        : dogs.filter(dog => selectedBreeds.includes(dog.breed));
 
     const fetchDogs = async () => {
         loading = true;
@@ -34,6 +40,8 @@
 
 <div>
     <h2 class="text-2xl font-medium mb-6 text-slate-100">Available Dogs</h2>
+
+    <BreedFilter bind:selectedBreeds />
     
     {#if loading}
         <!-- loading animation -->
@@ -55,15 +63,15 @@
         <div class="text-center py-12 bg-slate-800/50 backdrop-blur-sm rounded-xl border border-slate-700">
             <p class="text-red-400">{error}</p>
         </div>
-    {:else if dogs.length === 0}
+    {:else if filteredDogs.length === 0}
         <!-- no dogs found -->
         <div class="text-center py-12 bg-slate-800/50 backdrop-blur-sm rounded-xl border border-slate-700">
-            <p class="text-slate-300">No dogs available at the moment.</p>
+            <p class="text-slate-300">{dogs.length === 0 ? 'No dogs available at the moment.' : 'No dogs match the selected breed filters.'}</p>
         </div>
     {:else}
         <!-- dog list -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {#each dogs as dog (dog.id)}
+            {#each filteredDogs as dog (dog.id)}
                 <a 
                     href={`/dog/${dog.id}`} 
                     class="group block bg-slate-800/60 backdrop-blur-sm rounded-xl overflow-hidden shadow-lg border border-slate-700/50 hover:border-blue-500/50 hover:shadow-blue-500/10 hover:shadow-xl transition-all duration-300 hover:translate-y-[-6px]"
