@@ -6,10 +6,60 @@ import DogDetails from '../../components/DogDetails.svelte';
 const { id } = Astro.params;
 const dogId = parseInt(id || '0');
 
-const props = { dogId };
+// Fetch dog data server-side for SEO metadata
+interface Dog {
+  id: number;
+  name: string;
+  breed: string;
+  age: number;
+  description: string;
+  gender: string;
+  status: string;
+}
+
+let dog: Dog | null = null;
+try {
+  const apiUrl = new URL(`/api/dogs/${dogId}`, Astro.url);
+  const res = await fetch(apiUrl.toString());
+  if (res.ok) {
+    dog = await res.json() as Dog;
+  } else {
+    console.error(`Failed to fetch dog ${dogId}: ${res.status} ${res.statusText}`);
+  }
+} catch (err) {
+  console.error(`Error fetching dog ${dogId} for SEO metadata:`, err);
+}
+
+const pageTitle = dog ? `${dog.name} - Tailspin Shelter` : "Dog Details - Tailspin Shelter";
+const pageDescription = dog
+  ? `Meet ${dog.name}, a ${dog.age}-year-old ${dog.breed} available for adoption at Tailspin Shelter in Seattle.`
+  : "View dog details and adopt your new best friend at Tailspin Shelter in Seattle.";
+
+// Serialize and sanitize JSON-LD: escape "</" to prevent </script> injection
+const jsonLd = dog
+  ? JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "WebPage",
+      "name": pageTitle,
+      "description": pageDescription,
+      "url": Astro.url.toString(),
+      "about": {
+        "@type": "Thing",
+        "name": dog.name,
+        "description": dog.description,
+        "additionalProperty": [
+          { "@type": "PropertyValue", "name": "breed", "value": dog.breed },
+          { "@type": "PropertyValue", "name": "age", "value": String(dog.age) },
+          { "@type": "PropertyValue", "name": "gender", "value": dog.gender },
+          { "@type": "PropertyValue", "name": "status", "value": dog.status },
+        ],
+      },
+    }).replace(/</g, "\\u003c")
+  : null;
 ---
 
-<Layout title="Dog Details - Tailspin Shelter">
+<Layout title={pageTitle} description={pageDescription}>
+  {jsonLd && <script type="application/ld+json" set:html={jsonLd} slot="head" />}
   <div class="py-8">
     <DogDetails client:load dogId={dogId} />
     
