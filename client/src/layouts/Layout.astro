@@ -4,9 +4,13 @@ import "../styles/global.css"
 
 interface Props {
   title?: string;
+  description?: string;
 }
 
-const { title = "Tailspin Shelter" } = Astro.props;
+const {
+  title = "Tailspin Shelter",
+  description = "Tailspin Shelter is a non-profit dog adoption center in Seattle. Find your perfect canine companion and give a dog their forever home.",
+} = Astro.props;
 ---
 
 <!doctype html>
@@ -17,6 +21,13 @@ const { title = "Tailspin Shelter" } = Astro.props;
         <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
         <meta name="generator" content={Astro.generator} />
         <title>{title}</title>
+        <meta name="description" content={description} />
+        <!-- Open Graph -->
+        <meta property="og:title" content={title} />
+        <meta property="og:description" content={description} />
+        <meta property="og:type" content="website" />
+        <meta property="og:site_name" content="Tailspin Shelter" />
+        <slot name="head" />
         <!-- Preconnect to improve font loading -->
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
