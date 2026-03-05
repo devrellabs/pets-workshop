@@ -2,7 +2,8 @@ import socket
 import hashlib
 import os
 import sqlite3
-from Crypto.Cipher import DES
+from Crypto.Cipher import AES
+from Crypto.Util.Padding import pad
 from urllib.parse import urlparse
 
 # This file contains multiple Python functions that intentionally demonstrate common security vulnerabilities and coding pitfalls. 
@@ -21,13 +22,15 @@ def bind_socket_to_all_interfaces():
 
 # CA5350: Do Not Use Weak Cryptographic Algorithms
 def weak_cryptography():
-    des = DES.new('12345678', DES.MODE_ECB)  # DES is considered a weak algorithm
+    key = b'securekey1234567'  # 16 bytes for AES-128
+    iv = os.urandom(16)        # 16 bytes IV for AES
+    cipher = AES.new(key, AES.MODE_CBC, iv)
     plaintext = 'Sensitive Data'
-    encrypted_text = des.encrypt(
-        plaintext
-        .ljust(64)
-        .encode())
-    print(f"Encrypted text: {encrypted_text}")
+    # Pad plaintext to AES block size (16 bytes)
+    padded = pad(plaintext.encode(), AES.block_size)
+    encrypted_text = cipher.encrypt(padded)
+    print(f"IV: {iv.hex()}")
+    print(f"Encrypted text: {encrypted_text.hex()}")
 
 # SQL_INJECTION
 def sql_injection(user_input):
