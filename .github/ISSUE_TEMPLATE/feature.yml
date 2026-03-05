@@ -1,0 +1,76 @@
+name: Feature Request
+description: Suggest an awesome new feature
+title: "[Feature]: "
+labels: ["enhancement", "✨ feature", "needs-triage"]
+projects: ["clever-org-name/2"]
+assignees:
+  - collinmcneese
+  - scubaninja
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to suggest a new feature! We appreciate your creativity! 🚀
+  - type: input
+    id: contact
+    attributes:
+      label: Contact Details
+      description: How can we get in touch with you if we need more info?
+      placeholder: ex. email@example.com
+    validations:
+      required: false
+  - type: textarea
+    id: feature-description
+    attributes:
+      label: Feature Description
+      description: What feature would you like to see added?
+      placeholder: Describe the feature you'd like to see!
+      value: "I have an awesome idea!"
+    validations:
+      required: true
+  - type: textarea
+    id: use-case
+    attributes:
+      label: Use Case
+      description: How would this feature be used? What problem does it solve?
+      placeholder: Tell us how this feature would help you!
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives Considered
+      description: Have you considered any alternative solutions or features?
+      placeholder: What other approaches have you thought about?
+    validations:
+      required: false
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority
+      description: How important is this feature to you?
+      options:
+        - Nice to have
+        - Would be helpful
+        - Really want this
+        - Critical for my use case
+      default: 0
+    validations:
+      required: true
+  - type: checkboxes
+    id: willing-to-contribute
+    attributes:
+      label: Contribution
+      description: Are you willing to help implement this feature?
+      options:
+        - label: I'd be willing to contribute to this feature
+          required: false
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Code of Conduct
+      description: By submitting this issue, you agree to follow our [Code of Conduct](#)
+      options:
+        - label: I agree to follow this project's Code of Conduct
+          required: true

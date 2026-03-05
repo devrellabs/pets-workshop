@@ -1,0 +1,170 @@
+name: Security Incident
+description: Capture a security incident from runtime telemetry and drive remediation through PRs, pipeline validation, and governance gates.
+title: "[Security Incident]: "
+labels: ["security", "incident", "triage"]
+assignees: []
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Security Incident
+        Use this template for runtime security events or suspicious behavior detected by telemetry, API protection, or cloud workload security.
+
+        The goal is to link detection → triage → remediation → validation → deployment, with auditability.
+
+  - type: input
+    id: incident_summary
+    attributes:
+      label: Incident Summary
+      description: Short summary of the incident.
+      placeholder: Example: Suspicious API traffic spike detected on /payments endpoint
+    validations:
+      required: true
+
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Severity
+      options:
+        - Sev 0 (Critical)
+        - Sev 1 (High)
+        - Sev 2 (Medium)
+        - Sev 3 (Low)
+    validations:
+      required: true
+
+  - type: dropdown
+    id: status
+    attributes:
+      label: Status
+      options:
+        - Detected
+        - Triaging
+        - Contained
+        - Remediating
+        - Validating
+        - Resolved
+    validations:
+      required: true
+
+  - type: textarea
+    id: detection_source
+    attributes:
+      label: Detection Source
+      description: Where did the incident originate?
+      placeholder: |
+        Example:
+        - Microsoft Defender for APIs alert
+        - Microsoft Defender for Cloud alert
+        - Azure Application Insights anomaly
+        - WAF / API gateway alert
+    validations:
+      required: true
+
+  - type: input
+    id: telemetry_link
+    attributes:
+      label: Telemetry / Alert Link
+      description: Link to the alert, incident, dashboard, or log query.
+      placeholder: https://portal.azure.com/...
+    validations:
+      required: true
+
+  - type: textarea
+    id: impact_assessment
+    attributes:
+      label: Impact Assessment
+      description: What systems, data, or users are affected?
+      placeholder: |
+        Example:
+        - Potential data exposure: none confirmed
+        - Affected service: Payment API
+        - Customer impact: elevated errors for 2% of requests
+    validations:
+      required: true
+
+  - type: textarea
+    id: containment_actions
+    attributes:
+      label: Containment Actions
+      description: What immediate containment steps were taken?
+      placeholder: |
+        Example:
+        - Disabled feature flag
+        - Blocked IP ranges
+        - Rolled back deployment
+        - Reduced endpoint exposure
+    validations:
+      required: true
+
+  - type: input
+    id: related_release
+    attributes:
+      label: Related Deployment / Release
+      description: Link to the deployment or workflow run correlated to this incident.
+      placeholder: https://github.com/org/repo/actions/runs/123
+    validations:
+      required: false
+
+  - type: input
+    id: remediation_pr
+    attributes:
+      label: Remediation Pull Request
+      description: Link to the PR that resolves root cause.
+      placeholder: https://github.com/org/repo/pull/456
+
+  - type: input
+    id: validation_evidence
+    attributes:
+      label: Validation Evidence (Tests / Scans / Gates)
+      description: Link to workflow run(s), scan results, or gate approvals confirming remediation.
+      placeholder: https://github.com/org/repo/actions/runs/789
+
+  - type: input
+    id: azure_boards_item
+    attributes:
+      label: Azure Boards Work Item
+      description: Link to Azure Boards item to track incident remediation work.
+      placeholder: https://dev.azure.com/org/project/_workitems/edit/98765
+
+  - type: textarea
+    id: root_cause
+    attributes:
+      label: Root Cause
+      description: What caused the incident?
+      placeholder: |
+        Example:
+        - Missing authorization check introduced in recent release
+        - Misconfigured API policy allowing excessive payload size
+        - Vulnerable dependency exploited
+    validations:
+      required: false
+
+  - type: textarea
+    id: corrective_preventative_actions
+    attributes:
+      label: Corrective and Preventative Actions
+      description: How will recurrence be prevented?
+      placeholder: |
+        Example:
+        - Add unit tests for authorization edge cases
+        - Add API schema validation gate
+        - Add DAST policy for endpoint class
+        - Add runtime detection rule
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: incident_checks
+    attributes:
+      label: Incident Governance Checklist
+      options:
+        - label: Incident linked to telemetry evidence
+          required: true
+        - label: Containment action documented
+          required: true
+        - label: Remediation linked to PR and validation evidence
+          required: false
+        - label: Post-incident follow-ups captured (tests, controls, policies)
+          required: false
