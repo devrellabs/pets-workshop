@@ -101,17 +101,18 @@ def require_auth(f: Callable[..., Any]) -> Callable[..., Any]:
                 "Missing or invalid Authorization header", 401
             )
 
-        decode_options: dict[str, Any] = {}
+        decode_kwargs: dict[str, Any] = {
+            "algorithms": [algorithm],
+            "options": {"require": ["exp", "sub"]},
+        }
         if issuer:
-            decode_options["issuer"] = issuer
+            decode_kwargs["issuer"] = issuer
 
         try:
             jwt.decode(
                 token,
                 secret_key,
-                algorithms=[algorithm],
-                options={"require": ["exp", "sub"]},
-                **decode_options,
+                **decode_kwargs,
             )
         except jwt.ExpiredSignatureError:
             return _build_error_response("Token has expired", 401)
