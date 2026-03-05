@@ -1,0 +1,134 @@
+name: Security Requirement
+description: Track security requirements derived from threat modeling and enforce traceability to implementation and pipeline controls.
+title: "[Security Requirement]: "
+labels: ["security", "requirement"]
+assignees: []
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Security Requirement
+        Use this template to capture security requirements derived from threat models and ensure they are enforced through implementation, testing, and deployment governance.
+
+  - type: input
+    id: requirement_title
+    attributes:
+      label: Requirement Title
+      description: Short description of the security requirement.
+      placeholder: Example: Enforce rate limiting on Payment API
+    validations:
+      required: true
+
+  - type: textarea
+    id: requirement_description
+    attributes:
+      label: Requirement Description
+      description: Describe the requirement and expected security outcome.
+      placeholder: |
+        Example:
+        - APIs must enforce rate limiting to prevent abuse
+        - Authentication failures must trigger lockout thresholds
+    validations:
+      required: true
+
+  - type: dropdown
+    id: requirement_category
+    attributes:
+      label: Category
+      description: Select the security control category.
+      options:
+        - Authentication & Authorization
+        - Input Validation / Injection Prevention
+        - Secrets Management
+        - Supply Chain / Dependencies
+        - API Security / Abuse Prevention
+        - Data Protection
+        - Logging & Monitoring
+        - Infrastructure / Configuration
+        - Other
+    validations:
+      required: true
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority
+      description: Choose the priority level.
+      options:
+        - Critical
+        - High
+        - Medium
+        - Low
+    validations:
+      required: true
+
+  - type: dropdown
+    id: enforcement_point
+    attributes:
+      label: Enforcement Point
+      description: Where is this requirement enforced?
+      options:
+        - Developer Workflow (pre-commit / push protection)
+        - Pull Request Governance (rulesets / required checks)
+        - CI Pipeline (SAST/SCA/DAST/tests)
+        - Deployment Gates (approvals / attestations)
+        - Runtime Controls (WAF/API protection/RASP/telemetry)
+        - Multiple (end-to-end orchestration)
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance_criteria
+    attributes:
+      label: Acceptance Criteria
+      description: Define what “done” looks like.
+      placeholder: |
+        Example:
+        - Unit tests added for negative authorization cases
+        - API gateway enforces 100 req/min per IP
+        - Pipeline gate blocks if policy is violated
+    validations:
+      required: true
+
+  - type: input
+    id: linked_threat_model
+    attributes:
+      label: Linked Threat Model Issue
+      description: Link to the Threat Model issue that generated this requirement.
+      placeholder: https://github.com/org/repo/issues/123
+    validations:
+      required: true
+
+  - type: input
+    id: related_pr
+    attributes:
+      label: Related Pull Request / Branch
+      description: Link to implementation work (PR or branch).
+      placeholder: https://github.com/org/repo/pull/456
+
+  - type: input
+    id: pipeline_evidence
+    attributes:
+      label: Pipeline Evidence (Workflow Run / Report)
+      description: Link to workflow run, check, or report proving enforcement.
+      placeholder: https://github.com/org/repo/actions/runs/789
+
+  - type: input
+    id: azure_boards_item
+    attributes:
+      label: Azure Boards Work Item
+      description: Link to Azure Boards item for traceability.
+      placeholder: https://dev.azure.com/org/project/_workitems/edit/12345
+
+  - type: checkboxes
+    id: validation
+    attributes:
+      label: Validation Checklist
+      options:
+        - label: Requirement is linked to a Threat Model
+          required: true
+        - label: Enforcement point is defined and measurable
+          required: true
+        - label: Evidence link provided (PR and/or pipeline)
+          required: true

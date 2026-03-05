@@ -1,0 +1,128 @@
+name: Security Threat Model
+description: Document a threat model for a feature or component
+title: "[Threat Model]: "
+labels: ["security", "threat-model", "needs-triage"]
+projects: ["clever-org-name/2"]
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this template to document security threat models for new or existing features. Please be thorough — this helps us build secure software! 🔒
+
+  - type: input
+    id: contact
+    attributes:
+      label: Contact Details
+      description: How can we get in touch with you if we need more info?
+      placeholder: ex. email@example.com
+    validations:
+      required: false
+
+  - type: textarea
+    id: attack-surface
+    attributes:
+      label: Attack Surface
+      description: Describe the components, endpoints, data flows, or interfaces exposed to potential attackers.
+      placeholder: |
+        e.g.
+        - Public REST API endpoints (/api/dogs, /api/breeds)
+        - Database connections
+        - Authentication tokens
+    validations:
+      required: true
+
+  - type: textarea
+    id: trust-boundaries
+    attributes:
+      label: Trust Boundaries
+      description: Identify boundaries where the level of trust changes (e.g., client ↔ server, server ↔ database, internal ↔ external network).
+      placeholder: |
+        e.g.
+        - Client (browser) ↔ API server
+        - API server ↔ Database
+        - Public internet ↔ Azure Virtual Network
+    validations:
+      required: true
+
+  - type: textarea
+    id: abuse-cases
+    attributes:
+      label: Abuse Cases
+      description: Describe how an attacker could misuse or exploit the feature. Think like an adversary.
+      placeholder: |
+        e.g.
+        - An unauthenticated user enumerates all dog records via the API
+        - SQL injection through search parameters
+        - Denial of service via unbounded query results
+    validations:
+      required: true
+
+  - type: textarea
+    id: security-requirements
+    attributes:
+      label: Security Requirements
+      description: List the security requirements that must be met for this feature to be considered secure.
+      placeholder: |
+        e.g.
+        - All API endpoints must require authentication
+        - Input validation on all user-supplied parameters
+        - Rate limiting on public endpoints
+    validations:
+      required: true
+
+  - type: textarea
+    id: required-mitigations
+    attributes:
+      label: Required Mitigations
+      description: Describe the specific mitigations or controls that must be implemented to address the identified threats.
+      placeholder: |
+        e.g.
+        - Implement OAuth 2.0 / JWT token validation
+        - Use parameterized queries to prevent SQL injection
+        - Add rate limiting middleware (100 req/min)
+    validations:
+      required: true
+
+  - type: markdown
+    attributes:
+      value: |
+        ---
+        ### 🔗 Related Links
+        Use the fields below to link this threat model to relevant resources.
+
+  - type: input
+    id: architecture-diagram
+    attributes:
+      label: Architecture Diagram (Wiki)
+      description: Link to the architecture diagram in the repo wiki.
+      placeholder: https://github.com/github-samples/pets-workshop/wiki/Architecture-Diagram
+    validations:
+      required: false
+
+  - type: input
+    id: related-pr
+    attributes:
+      label: Related PR or Feature Branch
+      description: Link to the pull request or feature branch this threat model relates to.
+      placeholder: https://github.com/github-samples/pets-workshop/pull/123
+    validations:
+      required: false
+
+  - type: input
+    id: azure-boards-item
+    attributes:
+      label: Azure Boards Work Item
+      description: Link to the related Azure Boards work item.
+      placeholder: https://dev.azure.com/org/project/_workitems/edit/456
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Code of Conduct
+      description: By submitting this issue, you agree to follow our [Code of Conduct](#)
+      options:
+        - label: I agree to follow this project's Code of Conduct
+          required: true
