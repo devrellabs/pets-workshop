@@ -1,7 +1,10 @@
 import unittest
 from unittest.mock import patch, MagicMock
 import json
+import os
+import jwt
 from app import app  # Changed from relative import to absolute import
+from test_jwt_config import TEST_JWT_ENV, make_valid_token
 
 # filepath: server/test_app.py
 class TestApp(unittest.TestCase):
@@ -11,6 +14,13 @@ class TestApp(unittest.TestCase):
         self.app.testing = True
         # Turn off database initialization for tests
         app.config['TESTING'] = True
+        # Patch JWT environment variables so @require_auth accepts test tokens
+        self.env_patcher = patch.dict(os.environ, TEST_JWT_ENV)
+        self.env_patcher.start()
+        self.auth_headers = {'Authorization': f'Bearer {make_valid_token()}'}
+
+    def tearDown(self):
+        self.env_patcher.stop()
         
     def _create_mock_dog(self, dog_id, name, breed):
         """Helper method to create a mock dog with standard attributes"""
@@ -40,7 +50,7 @@ class TestApp(unittest.TestCase):
         self._setup_query_mock(mock_query, mock_dogs)
         
         # Act
-        response = self.app.get('/api/dogs')
+        response = self.app.get('/api/dogs', headers=self.auth_headers)
         
         # Assert
         self.assertEqual(response.status_code, 200)
@@ -68,7 +78,7 @@ class TestApp(unittest.TestCase):
         self._setup_query_mock(mock_query, [])
         
         # Act
-        response = self.app.get('/api/dogs')
+        response = self.app.get('/api/dogs', headers=self.auth_headers)
         
         # Assert
         self.assertEqual(response.status_code, 200)
@@ -83,7 +93,7 @@ class TestApp(unittest.TestCase):
         self._setup_query_mock(mock_query, [dog])
         
         # Act
-        response = self.app.get('/api/dogs')
+        response = self.app.get('/api/dogs', headers=self.auth_headers)
         
         # Assert
         data = json.loads(response.data)
