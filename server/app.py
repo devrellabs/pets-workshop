@@ -2,6 +2,7 @@ import os
 from typing import Dict, List, Any, Optional
 from flask import Flask, jsonify, Response
 from models import init_db, db, Dog, Breed
+from auth import require_auth
 
 # Get the server directory path
 base_dir: str = os.path.abspath(os.path.dirname(__file__))
@@ -14,6 +15,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 init_db(app)
 
 @app.route('/api/dogs', methods=['GET'])
+@require_auth
 def get_dogs() -> Response:
     query = db.session.query(
         Dog.id, 
@@ -36,6 +38,7 @@ def get_dogs() -> Response:
     return jsonify(dogs_list)
 
 @app.route('/api/dogs/<int:id>', methods=['GET'])
+@require_auth
 def get_dog(id: int) -> tuple[Response, int] | Response:
     # Query the specific dog by ID and join with breed to get breed name
     dog_query = db.session.query(
