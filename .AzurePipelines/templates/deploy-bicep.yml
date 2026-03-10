@@ -1,0 +1,38 @@
+##################################################
+# Template: deploy-bicep.yml
+# Deploys the infra/main.bicep Bicep template
+# to a subscription-scoped resource group for
+# the specified environment.
+##################################################
+parameters:
+  - name: environmentName
+    type: string
+  - name: azureServiceConnection
+    type: string
+  - name: location
+    type: string
+
+steps:
+- checkout: self
+  displayName: 'Checkout code'
+
+- task: AzureCLI@2
+  displayName: 'Deploy Bicep template'
+  inputs:
+    azureSubscription: ${{ parameters.azureServiceConnection }}
+    scriptType: 'bash'
+    scriptLocation: 'inlineScript'
+    addSpnToEnvironment: true
+    inlineScript: |
+      objectId=$(az ad sp show --id $servicePrincipalId --query id -o tsv)
+      az deployment sub create \
+        --location ${{ parameters.location }} \
+        --template-file $(System.DefaultWorkingDirectory)/infra/main.bicep \
+        --name ${{ parameters.environmentName }}-deployment \
+        --parameters \
+          environmentName=${{ parameters.environmentName }} \
+          location=${{ parameters.location }} \
+          principalId=$objectId \
+          principalType=ServicePrincipal \
+          clientExists=false \
+          serverExists=false
