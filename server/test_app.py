@@ -2,7 +2,6 @@ import unittest
 from unittest.mock import patch, MagicMock
 import json
 import os
-import jwt
 from app import app  # Changed from relative import to absolute import
 from test_jwt_config import TEST_JWT_ENV, make_valid_token
 
